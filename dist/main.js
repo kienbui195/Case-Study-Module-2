@@ -80,7 +80,8 @@ function addPersonInfo() {
     let name = rl.question(`Nhập tên thành viên: `);
     let dob = rl.question(`Nhập năm sinh: `);
     let job = rl.question(`Nhập nghề nghiệp: `);
-    let person = new Person_1.Person(name, dob, job);
+    let gender = rl.question(`Nhập giới tính: `);
+    let person = new Person_1.Person(name, dob, job, gender);
     return person;
 }
 //main
@@ -142,7 +143,7 @@ while (choice !== 0) {
                         console.table(listManager.getListManager()[index].getListPerson());
                     }
                     else
-                        console.log(`Không tồn tại số nhà`);
+                        console.log(`Không tồn tại số nhà!`);
                     break;
                 case 0:
                     break;
@@ -150,22 +151,66 @@ while (choice !== 0) {
             break;
         case 3:
             console.log();
-            console.log(`===== Sửa thông tin cá nhân =====`);
+            console.log(`===== Sửa thông tin hộ dân =====`);
             let number_OfHouseNeed = rl.question(`Nhập số nhà muốn sửa thông tin: `);
             let index = listManager.findByNumberOfHouse(number_OfHouseNeed);
             if (index !== -1) {
-                listManager.getListManager().splice(index, 1);
                 console.log();
+                console.table(listManager.getListManager()[index].getListPerson());
                 let numberOfHouse = rl.question(`Nhập số nhà mới: `);
-                let numberOfMember = rl.question(`Nhập số thành viên muốn thêm: `);
+                let numberOfMember = rl.question(`Nhập số thành viên mới: `);
                 let household = new Household_1.Household(numberOfMember, numberOfHouse);
                 for (let i = 1; i <= +numberOfMember; i++) {
                     console.log();
                     let person = addPersonInfo();
                     household.setListPerson(person);
                 }
-                listManager.getListManager().splice(index, 0, household);
+                listManager.getListManager().splice(index, 1, household);
             }
             break;
+        case 4:
+            deleteMenu();
+            switch (choiceDeleteInfo) {
+                case 1:
+                    console.log();
+                    console.log(`===== Xóa thông tin hộ dân =====`);
+                    let number = rl.question(`Nhập số nhà muốn xóa: `);
+                    let index = listManager.findByNumberOfHouse(number);
+                    listManager.getListManager().splice(index, 1);
+                    break;
+                case 2:
+                    console.log();
+                    console.log(`===== Xóa thông tin người dân =====`);
+                    let temparr = [];
+                    let number2 = rl.question(`Nhập số nhà: `);
+                    let name2 = rl.question(`Nhập tên muốn xóa: `);
+                    let index_manager = listManager.findByNumberOfHouse(number2);
+                    let tempindex = -1;
+                    if (index_manager !== -1) {
+                        temparr = listManager.getListManager()[index_manager].findByName(name2);
+                        console.table(temparr);
+                        let index_person = rl.question(`Chọn index thông tin nhân vật muốn xóa: `);
+                        listManager.getListManager()[index_manager].getListPerson().forEach((item, index) => {
+                            if (temparr[+index_person].getName() == item.getName()
+                                && temparr[+index_person].getDob() == item.getDob()
+                                && temparr[+index_person].getJob() == item.getJob()
+                                && temparr[+index_person].getGender() == item.getGender()) {
+                                tempindex = index;
+                            }
+                        });
+                        listManager.getListManager()[index_manager].getListPerson().splice(tempindex, 1);
+                    }
+                    break;
+                case 0:
+                    break;
+            }
+            break;
+        case 5:
+            managerMenu();
+            switch (choiceManger) {
+                case 1:
+                    console.log();
+                    console.log(`===== Danh sách các thiếu niên đạt tiêu chuẩn đi nhập ngũ =====`);
+            }
     }
 }

@@ -2,11 +2,13 @@ export class Person {
     private _name: string;
     private _dob: string;
     private _job: string;
+    private _gender: string;
 
-    constructor(name: string, dob: string, job: string) {
+    constructor(name: string, dob: string, job: string, gender: string) {
         this._name = name; 
         this._dob = dob;
         this._job = job;
+        this._gender = gender;
     }
 
     getName(): string {
@@ -31,5 +33,13 @@ export class Person {
 
     setJob(value: string) {
         this._job = value;
+    }
+
+    getGender(): string {
+        return this._gender;
+    }
+
+    setGender(value: string) {
+        this._gender = value;
     }
 }

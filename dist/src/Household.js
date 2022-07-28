@@ -25,5 +25,14 @@ class Household {
     setListPerson(data) {
         this._listPerson.push(data);
     }
+    findByName(data) {
+        let temp = [];
+        this._listPerson.forEach((value, index) => {
+            if (value.getName() === data) {
+                temp.push(value);
+            }
+        });
+        return temp;
+    }
 }
 exports.Household = Household;

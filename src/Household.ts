@@ -33,4 +33,14 @@ export class Household {
     setListPerson(data: Person) {
         this._listPerson.push(data);
     }
+
+    findByName(data: string): Person[] {
+        let temp: Person[] = [];
+        this._listPerson.forEach((value,index) => {
+            if (value.getName() === data) {
+                temp.push(value)
+            }
+        })
+        return temp;
+    }
 }

@@ -2,10 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Person = void 0;
 class Person {
-    constructor(name, dob, job) {
+    constructor(name, dob, job, gender) {
         this._name = name;
         this._dob = dob;
         this._job = job;
+        this._gender = gender;
     }
     getName() {
         return this._name;
@@ -24,6 +25,12 @@ class Person {
     }
     setJob(value) {
         this._job = value;
+    }
+    getGender() {
+        return this._gender;
+    }
+    setGender(value) {
+        this._gender = value;
     }
 }
 exports.Person = Person;
