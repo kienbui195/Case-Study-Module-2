@@ -2,6 +2,10 @@ import { DistrictManager } from "./src/District";
 import { Household } from "./src/Household";
 import { Person } from "./src/Person"
 import * as rl from "readline-sync";
+import {checkGenderForm} from "./checkFunction/RegEx_Gender";
+import {checkJobForm} from "./checkFunction/RegEx_Job";
+import {checkAgeForm} from "./checkFunction/RegEx_Age";
+import {checkNumberOfHouse} from "./checkFunction/RegEx_NumberOfHouse";
 
 let listManager = new DistrictManager();
 
