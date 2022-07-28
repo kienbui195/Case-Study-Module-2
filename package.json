@@ -1,0 +1,14 @@
+{
+  "name": "CaseStudyM2",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@types/node": "^18.0.6",
+    "@types/readline-sync": "^1.4.4"
+  },
+  "scripts" : {
+      "start" : "node ./dist/main.js"
+  },
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
+}
