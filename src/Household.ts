@@ -26,7 +26,7 @@ export class Household {
         this._numberOfHouse = value;
     }
 
-    getListPerson() {
+    getListPerson(): Person[] {
         return this._listPerson;
     }
 

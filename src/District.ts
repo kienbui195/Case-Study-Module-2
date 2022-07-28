@@ -6,7 +6,7 @@ export class DistrictManager {
     addInfo(data: Household) {
         this.listManager.push(data);
     }
-    getListManager() {
+    getListManager(): Household[] {
         return this.listManager
     }
     findByNumberOfHouse(data: string): number {

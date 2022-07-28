@@ -76,6 +76,13 @@ function managerMenu() {
     console.log(`0. Trở về`);
     choiceManger = +rl.question(`Mời bạn nhập lựa chọn: `);
 }
+function addPersonInfo() {
+    let name = rl.question(`Nhập tên thành viên: `);
+    let dob = rl.question(`Nhập năm sinh: `);
+    let job = rl.question(`Nhập nghề nghiệp: `);
+    let person = new Person_1.Person(name, dob, job);
+    return person;
+}
 //main
 while (choice !== 0) {
     mainMenu();
@@ -89,18 +96,10 @@ while (choice !== 0) {
                     let numberOfHouse = rl.question(`Nhập số nhà: `);
                     let numberOfMember = rl.question(`Nhập số thành viên muốn thêm: `);
                     let household = new Household_1.Household(numberOfMember, numberOfHouse);
-                    if (+numberOfMember < 2) {
-                        let name = rl.question(`Nhập tên: `);
-                    }
-                    else {
-                        for (let i = 1; i <= +numberOfMember; i++) {
-                            console.log();
-                            let name = rl.question(`Nhập tên thành viên thứ ${i}: `);
-                            let dob = rl.question(`Nhập năm sinh: `);
-                            let job = rl.question(`Nhập nghề nghiệp: `);
-                            let person = new Person_1.Person(name, dob, job);
-                            household.setListPerson(person);
-                        }
+                    for (let i = 1; i <= +numberOfMember; i++) {
+                        console.log();
+                        let person = addPersonInfo();
+                        household.setListPerson(person);
                     }
                     listManager.addInfo(household);
                     break;
@@ -112,10 +111,7 @@ while (choice !== 0) {
                     if (listManager.findByNumberOfHouse(numberOfHouseNeed) !== -1) {
                         let input = rl.question(`Nhập số lượng thành viên muốn thêm: `);
                         for (let i = 0; i < +input; i++) {
-                            let name1 = rl.question(`Nhập tên: `);
-                            let dob1 = rl.question(`Nhập năm sinh: `);
-                            let job1 = rl.question(`Nhập nghề nghiệp: `);
-                            let person = new Person_1.Person(name1, dob1, job1);
+                            let person = addPersonInfo();
                             listManager.getListManager()[index].setListPerson(person);
                         }
                     }
@@ -151,8 +147,25 @@ while (choice !== 0) {
                 case 0:
                     break;
             }
+            break;
         case 3:
             console.log();
-            console.log(`===== Sửa thông tin cá nhân`);
+            console.log(`===== Sửa thông tin cá nhân =====`);
+            let number_OfHouseNeed = rl.question(`Nhập số nhà muốn sửa thông tin: `);
+            let index = listManager.findByNumberOfHouse(number_OfHouseNeed);
+            if (index !== -1) {
+                listManager.getListManager().splice(index, 1);
+                console.log();
+                let numberOfHouse = rl.question(`Nhập số nhà mới: `);
+                let numberOfMember = rl.question(`Nhập số thành viên muốn thêm: `);
+                let household = new Household_1.Household(numberOfMember, numberOfHouse);
+                for (let i = 1; i <= +numberOfMember; i++) {
+                    console.log();
+                    let person = addPersonInfo();
+                    household.setListPerson(person);
+                }
+                listManager.getListManager().splice(index, 0, household);
+            }
+            break;
     }
 }
