@@ -32,5 +32,8 @@ class Person {
     setGender(value) {
         this._gender = value;
     }
+    getAge() {
+        return (new Date().getFullYear() - +this._dob);
+    }
 }
 exports.Person = Person;

@@ -51,15 +51,6 @@ function deleteMenu() {
     choiceDeleteInfo = +rl.question(`Mời bạn nhập lựa chọn: `);
 }
 
-function managerMenu() {
-    console.log()
-    console.log(`======= Quản lý ========`)
-    console.log(`1. Danh sách thiếu niên đến tuổi nhập ngũ`)
-    console.log(`2. Danh sách hưu trí hiện tại của địa phương`)
-    console.log(`0. Trở về`)
-    choiceManger = +rl.question(`Mời bạn nhập lựa chọn: `);
-}
-
 function addPersonInfo() {
     let name = rl.question(`Nhập tên thành viên: `)
     let dob = rl.question(`Nhập năm sinh: `)
@@ -68,6 +59,17 @@ function addPersonInfo() {
     let person = new Person(name, dob, job, gender);
     return person;
 }
+
+function managerMenu() {
+    console.log()
+    console.log(`======= Quản lý ========`)
+    console.log(`1. Thông tin chung khu phố`)
+    console.log(`2. Danh sách thiếu niên đến tuổi nhập ngũ`)
+    console.log(`3. Danh sách hưu trí hiện tại của địa phương`)
+    console.log(`0. Trở về`)
+    choiceManger = +rl.question(`Mời bạn nhập lựa chọn: `);
+}
+
 
 //main
 while (choice !== 0) {
@@ -98,6 +100,7 @@ while (choice !== 0) {
                     if (listManager.findByNumberOfHouse(numberOfHouseNeed) !== -1) {
                         let input = rl.question(`Nhập số lượng thành viên muốn thêm: `)
                         for (let i = 0; i < +input; i++) {
+                            console.log()
                             let person = addPersonInfo()
                             listManager.getListManager()[index].setListPerson(person)
                         }
@@ -192,11 +195,69 @@ while (choice !== 0) {
             switch (choiceManger) {
                 case 1:
                     console.log()
-                    console.log(`===== Danh sách các thiếu niên đạt tiêu chuẩn đi nhập ngũ =====`)
-
+                    console.log(`===== Thống kê =====`)
+                    let sum = 0;
+                    let numberOfMale = 0;
+                    let numberOfFemale = 0;
+                    let teenager = 0;
+                    let middle_aged = 0;
+                    let senior_citizen = 0;
+                    for (let i = 0; i < listManager.getListManager().length ; i++) {
+                        sum += listManager.getListManager()[i].getListPerson().length;
+                        for (let j = 0; j < listManager.getListManager()[i].getListPerson().length; j++) {
+                            if (listManager.getListManager()[i].getListPerson()[j].getGender() == "Male") {
+                                numberOfMale++;
+                            } else if (listManager.getListManager()[i].getListPerson()[j].getGender() == "Female") {
+                                numberOfFemale++;
+                            }
+                            if (listManager.getListManager()[i].getListPerson()[j].getAge() > 18
+                                && listManager.getListManager()[i].getListPerson()[j].getAge() < 35) {
+                                teenager++;
+                            } else if (listManager.getListManager()[i].getListPerson()[j].getAge() >= 35
+                                && listManager.getListManager()[i].getListPerson()[j].getAge() < 54) {
+                                middle_aged++;
+                            } else  if (listManager.getListManager()[i].getListPerson()[j].getAge() >= 54) {
+                                senior_citizen++
+                            }
+                        }
+                    }
+                    console.log(`Khu phố tổng cộng có ${sum} người. Trong đó có ${numberOfMale} nam và ${numberOfFemale} nữ`)
+                    console.log(`Độ tuổi Trẻ Trâu có ${teenager} người; độ tuổi Trung Tuần có ${middle_aged} người; độ tuổi Về Vườn có ${senior_citizen} người`)
+                    break;
+                case 2:
+                    console.log()
+                    console.log(`====== Danh sách thiếu niên có thể tham gia nghĩa vụ quân sự ======`)
+                    let arrayManagerMilitary: Person[] = [];
+                    for (let i = 0; i < listManager.getListManager().length ; i++) {
+                        for (let j = 0; j < listManager.getListManager()[i].getListPerson().length; j++) {
+                            if (listManager.getListManager()[i].getListPerson()[j].getAge() >= 18
+                                && listManager.getListManager()[i].getListPerson()[j].getAge() <=25
+                                && listManager.getListManager()[i].getListPerson()[j].getGender() === 'Male') {
+                                arrayManagerMilitary.push(listManager.getListManager()[i].getListPerson()[j])
+                            }
+                        }
+                    }
+                    console.table(arrayManagerMilitary);
+                    break;
+                case 3:
+                    console.log()
+                    console.log(`====== Danh sách hưu trí trong xóm ======`)
+                    let arrayOldPeople: Person[] = []
+                    for (let i = 0; i < listManager.getListManager().length ; i++) {
+                        for (let j = 0; j < listManager.getListManager()[i].getListPerson().length; j++) {
+                            if (listManager.getListManager()[i].getListPerson()[j].getAge() >= 54) {
+                                arrayOldPeople.push(listManager.getListManager()[i].getListPerson()[j])
+                            }
+                        }
+                    }
+                    console.table(arrayOldPeople)
+                    break;
+                case 0:
+                    break;
             }
-
+            break;
     }
+
 }
     
     

@@ -42,4 +42,8 @@ export class Person {
     setGender(value: string) {
         this._gender = value;
     }
+
+    getAge(): number {
+        return (new Date().getFullYear() - +this._dob);
+    }
 }
