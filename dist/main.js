@@ -23,8 +23,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.addPersonInfo = void 0;
 const District_1 = require("./src/District");
 const Household_1 = require("./src/Household");
+const Person_1 = require("./src/Person");
 const rl = __importStar(require("readline-sync"));
 const RegEx_NumberOfHouse_1 = require("./checkFunction/RegEx_NumberOfHouse");
 const MainMenu_1 = require("./Menu/MainMenu");
@@ -32,30 +34,48 @@ const AddMenu_1 = require("./Menu/AddMenu");
 const ShowMenu_1 = require("./Menu/ShowMenu");
 const DeleteMenu_1 = require("./Menu/DeleteMenu");
 const ManagerMenu_1 = require("./Menu/ManagerMenu");
-const AddPersonInfo_1 = require("./FunctionHandle/AddPersonInfo");
 const ChoiceMenu1_1 = require("./Enum/ChoiceMenu1");
 const ChoiceAddMenu_1 = require("./Enum/ChoiceAddMenu");
 const ChoiceShowMenu_1 = require("./Enum/ChoiceShowMenu");
 const ChoiceDeleteMenu_1 = require("./Enum/ChoiceDeleteMenu");
 const ChoiceManagerMenu_1 = require("./Enum/ChoiceManagerMenu");
+const RegEx_Age_1 = require("./checkFunction/RegEx_Age");
+const RegEx_Job_1 = require("./checkFunction/RegEx_Job");
+const RegEx_Gender_1 = require("./checkFunction/RegEx_Gender");
 let listManager = new District_1.DistrictManager();
 let choice = -1;
 let choiceAddInfo = -1;
 let choiceShowInfo = -1;
 let choiceDeleteInfo = -1;
 let choiceManger = -1;
+function addPersonInfo() {
+    let dob, gender, job, name;
+    name = rl.question(`Nhập tên thành viên: `);
+    do {
+        dob = rl.question(`Nhập năm sinh: `);
+    } while ((0, RegEx_Age_1.checkAgeForm)(dob));
+    do {
+        job = rl.question(`Nhập nghề nghiệp: `);
+    } while ((0, RegEx_Job_1.checkJobForm)(job));
+    do {
+        gender = rl.question(`Nhập giới tính: `);
+    } while ((0, RegEx_Gender_1.checkGenderForm)(gender));
+    let person = new Person_1.Person(name, dob, job, gender);
+    return person;
+}
+exports.addPersonInfo = addPersonInfo;
 function addNewInfo() {
     console.log();
     console.log(`====== Thêm thông tin hộ dân mới ======`);
     let numberOfHouse;
     do {
-        numberOfHouse = rl.question(`Nhập số nhà (Chỉ bao gồm chữ cái viết hoa/thường và số): `);
+        numberOfHouse = rl.question(`Nhập số nhà: `);
     } while ((0, RegEx_NumberOfHouse_1.checkNumberOfHouse)(numberOfHouse));
     let numberOfMember = rl.question(`Nhập số thành viên muốn thêm: `);
     let household = new Household_1.Household(numberOfMember, numberOfHouse);
     for (let i = 1; i <= +numberOfMember; i++) {
         console.log();
-        let person = (0, AddPersonInfo_1.addPersonInfo)();
+        let person = addPersonInfo();
         household.setListPerson(person);
     }
     listManager.addInfo(household);
@@ -66,14 +86,17 @@ function addPlusInfo() {
         console.log(`Không có thông tin. Mời bạn thêm thông tin!`);
     }
     else {
+        let numberOfHouseNeed;
         console.log(`======= Thêm thông tin vào hộ dân sẵn có =======`);
-        let numberOfHouseNeed = rl.question(`Nhập số nhà muốn thêm thông tin thành viên: `);
+        do {
+            numberOfHouseNeed = rl.question(`Nhập số nhà muốn thêm: `);
+        } while ((0, RegEx_NumberOfHouse_1.checkNumberOfHouse)(numberOfHouseNeed));
         let index = listManager.findByNumberOfHouse(numberOfHouseNeed);
         if (listManager.findByNumberOfHouse(numberOfHouseNeed) !== -1) {
             let input = +rl.question(`Nhập số lượng thành viên muốn thêm: `);
             for (let i = 0; i < input; i++) {
                 console.log();
-                let person = (0, AddPersonInfo_1.addPersonInfo)();
+                let person = addPersonInfo();
                 listManager.getListManager()[index].setListPerson(person);
             }
         }
@@ -81,7 +104,7 @@ function addPlusInfo() {
             console.log(`Không có trong danh sách!`);
     }
 }
-function Add_Info() {
+function add_Info() {
     (0, AddMenu_1.addMenu)();
     choiceAddInfo = +rl.question(`Mời bạn nhập lựa chọn: `);
     switch (choiceAddInfo) {
@@ -95,45 +118,50 @@ function Add_Info() {
             break;
     }
 }
-function ShowListDistrict() {
+function showListDistrict() {
     console.log();
     if (listManager.getListManager().length == 0) {
         console.log(`Không có thông tin. Mời nhập thêm thông tin`);
     }
     else {
         console.log(`===== Hiển thị danh sách hộ dân trong toàn khu phố =====`);
+        console.log();
         for (const item of listManager.getListManager()) {
-            console.log();
             console.log(`Số nhà ${item.getNumberOfHouse()} - Số nhân khẩu: ${item.getListPerson().length}`);
         }
     }
 }
-function ShowPerson() {
+function showPerson() {
     console.log();
     console.log(`===== Hiển thị thông tin người dân theo từng hộ dân =====`);
     let numberOfHouse_Need = rl.question(`Nhập số nhà muốn xem thông tin người dân: `);
     let index = listManager.findByNumberOfHouse(numberOfHouse_Need);
     if (index !== -1) {
-        console.table(listManager.getListManager()[index].getListPerson());
+        if (listManager.getListManager()[index].getListPerson().length == 0) {
+            console.log(`Không có thông tin! Mời nhập thêm thông tin`);
+        }
+        else {
+            console.table(listManager.getListManager()[index].getListPerson());
+        }
     }
     else
         console.log(`Không tồn tại số nhà!`);
 }
-function Show_Info() {
+function show_Info() {
     (0, ShowMenu_1.showMenu)();
     choiceShowInfo = +rl.question(`Mời bạn nhập lựa chọn: `);
     switch (choiceShowInfo) {
         case ChoiceShowMenu_1.ChoiceShowMenu.SHOWALL:
-            ShowListDistrict();
+            showListDistrict();
             break;
         case ChoiceShowMenu_1.ChoiceShowMenu.SHOWPERSON:
-            ShowPerson();
+            showPerson();
             break;
         case ChoiceShowMenu_1.ChoiceShowMenu.GOBACK:
             break;
     }
 }
-function Modify_Info() {
+function modify_Info() {
     console.log();
     console.log(`===== Sửa thông tin hộ dân =====`);
     let number_OfHouseNeed = rl.question(`Nhập số nhà muốn sửa thông tin: `);
@@ -142,15 +170,9 @@ function Modify_Info() {
         console.log();
         console.table(listManager.getListManager()[index].getListPerson());
         let numberOfHouse = rl.question(`Nhập số nhà mới: `);
-        let numberOfMember = rl.question(`Nhập số thành viên mới: `);
-        let household = new Household_1.Household(numberOfMember, numberOfHouse);
-        for (let i = 1; i <= +numberOfMember; i++) {
-            console.log();
-            let person = (0, AddPersonInfo_1.addPersonInfo)();
-            household.setListPerson(person);
-        }
-        listManager.getListManager().splice(index, 1, household);
     }
+    else
+        console.log(`Không tồn tại số nhà!`);
 }
 function DeleteHousehold() {
     console.log();
@@ -244,7 +266,7 @@ function List_Old_Person() {
     }
     console.table(arrayOldPeople);
 }
-function Delete_Info() {
+function delete_Info() {
     (0, DeleteMenu_1.deleteMenu)();
     choiceDeleteInfo = +rl.question(`Mời bạn nhập lựa chọn: `);
     switch (choiceDeleteInfo) {
@@ -258,7 +280,7 @@ function Delete_Info() {
             break;
     }
 }
-function Manager_Info() {
+function manager_Info() {
     (0, ManagerMenu_1.managerMenu)();
     choiceManger = +rl.question(`Mời bạn nhập lựa chọn: `);
     switch (choiceManger) {
@@ -281,19 +303,19 @@ while (choice !== 0) {
     choice = +rl.question(`Mời bạn nhập lựa chọn: `);
     switch (choice) {
         case ChoiceMenu1_1.ChoiceMainMenu.ADDINFO:
-            Add_Info();
+            add_Info();
             break;
         case ChoiceMenu1_1.ChoiceMainMenu.SHOWINFO:
-            Show_Info();
+            show_Info();
             break;
         case ChoiceMenu1_1.ChoiceMainMenu.MODIFYINFO:
-            Modify_Info();
+            modify_Info();
             break;
         case ChoiceMenu1_1.ChoiceMainMenu.DELETEINFO:
-            Delete_Info();
+            delete_Info();
             break;
         case ChoiceMenu1_1.ChoiceMainMenu.MANAGERINFO:
-            Manager_Info();
+            manager_Info();
             break;
     }
 }
