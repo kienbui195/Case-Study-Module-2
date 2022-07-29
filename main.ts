@@ -36,8 +36,7 @@ export function addPersonInfo() {
     do {
         gender = rl.question(`Nhập giới tính: `);
     } while (!checkGenderForm(gender));
-    let person = new Person(name, dob, job, gender);
-    return person;
+    return new Person(name, dob, job, gender);
 }
 
 function addNewInfo() {
@@ -148,23 +147,23 @@ function modify_Info() {
     console.log();
     console.log(`===== Sửa thông tin hộ dân =====`);
     let numberOfHouseNeed = rl.question(`Nhập số nhà muốn sửa thông tin: `);
-    let index_Manager = listManager.findByNumberOfHouse(numberOfHouseNeed);
+    let indexManager = listManager.findByNumberOfHouse(numberOfHouseNeed);
     let name: string, gender: string, job: string, dob: string;
-    if (index_Manager !== -1) {
+    if (indexManager !== -1) {
         console.log()
-        console.table(listManager.getListManager()[index_Manager].getListPerson());
+        console.table(listManager.getListManager()[indexManager].getListPerson());
         let numberOfHouse: string;
         do {
             numberOfHouse = rl.question(`Nhập số nhà: `);
         } while (!checkGenderForm(numberOfHouse) && listManager.findByNumberOfHouse(numberOfHouse) != -1);
-        listManager.getListManager()[index_Manager].setNumberOfHouse(numberOfHouse);
+        listManager.getListManager()[indexManager].setNumberOfHouse(numberOfHouse);
         let nameNeedEdit = rl.question(`Nhập tên người dân muốn sửa thông tin: `);
-        let arrayPersonSameName = listManager.getListManager()[index_Manager].findByName(nameNeedEdit);
+        let arrayPersonSameName = listManager.getListManager()[indexManager].findByName(nameNeedEdit);
         let index_Person_Needed: number = -1;
         if (arrayPersonSameName.length > 0) {
             console.table(arrayPersonSameName);
             let index = +rl.question(`Nhập index của người dân muốn chỉnh sửa: `);
-            listManager.getListManager()[index_Manager].getListPerson().forEach((household,index_househole) => {
+            listManager.getListManager()[indexManager].getListPerson().forEach((household,index_househole) => {
                 if (arrayPersonSameName[index].getName() == household.getName()
                     && arrayPersonSameName[index].getDob() == household.getDob()
                     && arrayPersonSameName[index].getJob() == household.getJob()
@@ -172,7 +171,7 @@ function modify_Info() {
                     index_Person_Needed = index_househole;
                 }
             });
-            console.table(listManager.getListManager()[index_Manager].getListPerson()[index_Person_Needed]);
+            console.table(listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed]);
             fixMenu();
             choiceToFix = +rl.question(`Mời bạn nhập lựa chọn: `);
             switch (choiceToFix) {
@@ -180,25 +179,25 @@ function modify_Info() {
                     do {
                         name = rl.question(`Nhập tên: `);
                     } while (!checkNameForm(name));
-                    listManager.getListManager()[index_Manager].getListPerson()[index_Person_Needed].setName(name);
+                    listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setName(name);
                     break;
                 case ChoiceToFix.DOB:
                     do {
                         dob = rl.question(`Nhập năm sinh: `);
                     } while (!checkAgeForm(dob));
-                    listManager.getListManager()[index_Manager].getListPerson()[index_Person_Needed].setDob(dob);
+                    listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setDob(dob);
                     break;
                 case ChoiceToFix.JOB:
                     do {
                         job = rl.question(`Nhập nghề nghiệp: `);
                     } while (!checkJobForm(job));
-                    listManager.getListManager()[index_Manager].getListPerson()[index_Person_Needed].setDob(job);
+                    listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setDob(job);
                     break;
                 case ChoiceToFix.GENDER:
                     do {
                         gender = rl.question(`Nhập giới tính: `);
                     } while (!checkGenderForm(gender));
-                    listManager.getListManager()[index_Manager].getListPerson()[index_Person_Needed].setDob(gender);
+                    listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setDob(gender);
                     break;
                 case ChoiceToFix.GOBACK:
                     break;
@@ -221,24 +220,24 @@ function DeleteHousehold() {
 function DeletePerson() {
     console.log()
     console.log(`===== Xóa thông tin người dân =====`)
-    let temparr: Person[] = []
+    let tempArr: Person[] = []
     let number2 = rl.question(`Nhập số nhà: `)
     let name2 = rl.question(`Nhập tên muốn xóa: `)
     let index_manager = listManager.findByNumberOfHouse(number2)
-    let tempindex: number = -1;
+    let tempIndex: number = -1;
     if (index_manager !== -1) {
-        temparr = listManager.getListManager()[index_manager].findByName(name2)
-        console.table(temparr)
+        tempArr = listManager.getListManager()[index_manager].findByName(name2)
+        console.table(tempArr)
         let index_person = rl.question(`Chọn index thông tin nhân vật muốn xóa: `)
         listManager.getListManager()[index_manager].getListPerson().forEach((item, index) => {
-            if (temparr[+index_person].getName() == item.getName()
-                && temparr[+index_person].getDob() == item.getDob()
-                && temparr[+index_person].getJob() == item.getJob()
-                && temparr[+index_person].getGender() == item.getGender()) {
-                tempindex = index;
+            if (tempArr[+index_person].getName() == item.getName()
+                && tempArr[+index_person].getDob() == item.getDob()
+                && tempArr[+index_person].getJob() == item.getJob()
+                && tempArr[+index_person].getGender() == item.getGender()) {
+                tempIndex = index;
             }
         })
-        listManager.getListManager()[index_manager].getListPerson().splice(tempindex, 1)
+        listManager.getListManager()[index_manager].getListPerson().splice(tempIndex, 1)
     }
 }
 
