@@ -17,6 +17,8 @@ import {ChoiceManagerMenu} from "./Enum/ChoiceManagerMenu";
 import {checkAgeForm} from "./checkFunction/RegEx_Age";
 import {checkJobForm} from "./checkFunction/RegEx_Job";
 import {checkGenderForm} from "./checkFunction/RegEx_Gender";
+import {fixMenu} from "./Menu/FixMenu";
+import {ChoiceToFix} from "./Enum/ChoiceToFix";
 
 let listManager = new DistrictManager();
 
@@ -26,6 +28,7 @@ let choiceAddInfo = -1;
 let choiceShowInfo = -1;
 let choiceDeleteInfo = -1;
 let choiceManger = -1;
+let choiceToFix = -1;
 
 export function addPersonInfo() {
     let dob: string, gender: string, job: string, name: string;
@@ -143,11 +146,27 @@ function modify_Info() {
     console.log();
     console.log(`===== Sửa thông tin hộ dân =====`);
     let number_OfHouseNeed = rl.question(`Nhập số nhà muốn sửa thông tin: `);
+    let nameNeedEdit = rl.question(`Nhập tên người dân muốn sửa thông tin: `);
     let index = listManager.findByNumberOfHouse(number_OfHouseNeed);
     if (index !== -1) {
         console.log()
         console.table(listManager.getListManager()[index].getListPerson());
         let numberOfHouse = rl.question(`Nhập số nhà mới: `);
+        listManager.getListManager()[index].setNumberOfHouse(numberOfHouse);
+        fixMenu();
+        choiceToFix = +rl.question(`Mời bạn nhập lựa chọn: `);
+        switch (choiceToFix) {
+            case ChoiceToFix.NAME:
+                break;
+            case ChoiceToFix.DOB:
+                break;
+            case ChoiceToFix.JOB:
+                break;
+            case ChoiceToFix.GENDER:
+                break;
+            case ChoiceToFix.GOBACK:
+                break;
+        }
 
     } else console.log(`Không tồn tại số nhà!`);
 }

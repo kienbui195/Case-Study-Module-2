@@ -42,12 +42,15 @@ const ChoiceManagerMenu_1 = require("./Enum/ChoiceManagerMenu");
 const RegEx_Age_1 = require("./checkFunction/RegEx_Age");
 const RegEx_Job_1 = require("./checkFunction/RegEx_Job");
 const RegEx_Gender_1 = require("./checkFunction/RegEx_Gender");
+const FixMenu_1 = require("./Menu/FixMenu");
+const ChoiceToFix_1 = require("./Enum/ChoiceToFix");
 let listManager = new District_1.DistrictManager();
 let choice = -1;
 let choiceAddInfo = -1;
 let choiceShowInfo = -1;
 let choiceDeleteInfo = -1;
 let choiceManger = -1;
+let choiceToFix = -1;
 function addPersonInfo() {
     let dob, gender, job, name;
     name = rl.question(`Nhập tên thành viên: `);
@@ -165,11 +168,27 @@ function modify_Info() {
     console.log();
     console.log(`===== Sửa thông tin hộ dân =====`);
     let number_OfHouseNeed = rl.question(`Nhập số nhà muốn sửa thông tin: `);
+    let nameNeedEdit = rl.question(`Nhập tên người dân muốn sửa thông tin: `);
     let index = listManager.findByNumberOfHouse(number_OfHouseNeed);
     if (index !== -1) {
         console.log();
         console.table(listManager.getListManager()[index].getListPerson());
         let numberOfHouse = rl.question(`Nhập số nhà mới: `);
+        listManager.getListManager()[index].setNumberOfHouse(numberOfHouse);
+        (0, FixMenu_1.fixMenu)();
+        choiceToFix = +rl.question(`Mời bạn nhập lựa chọn: `);
+        switch (choiceToFix) {
+            case ChoiceToFix_1.ChoiceToFix.NAME:
+                break;
+            case ChoiceToFix_1.ChoiceToFix.DOB:
+                break;
+            case ChoiceToFix_1.ChoiceToFix.JOB:
+                break;
+            case ChoiceToFix_1.ChoiceToFix.GENDER:
+                break;
+            case ChoiceToFix_1.ChoiceToFix.GOBACK:
+                break;
+        }
     }
     else
         console.log(`Không tồn tại số nhà!`);
