@@ -212,32 +212,42 @@ function modify_Info() {
 function DeleteHousehold() {
     console.log()
     console.log(`===== Xóa thông tin hộ dân =====`)
-    let number = rl.question(`Nhập số nhà muốn xóa: `)
+    let number: string;
+    do {
+        number = rl.question(`Nhập số nhà muốn xóa: `)
+    } while (!checkNumberOfHouse(number));
     let index = listManager.findByNumberOfHouse(number)
-    listManager.getListManager().splice(index, 1)
+    if (index !== -1) {
+        listManager.getListManager().splice(index, 1);
+    } else console.log(`Không tồn tại số nhà!`);
 }
 
 function DeletePerson() {
     console.log()
     console.log(`===== Xóa thông tin người dân =====`)
-    let tempArr: Person[] = []
-    let number2 = rl.question(`Nhập số nhà: `)
-    let name2 = rl.question(`Nhập tên muốn xóa: `)
-    let index_manager = listManager.findByNumberOfHouse(number2)
+    let tempArr: Person[] = [];
+    let number: string, name: string;
+    do {
+        number = rl.question(`Nhập số nhà: `)
+    } while (!checkNumberOfHouse(number));
+    do {
+        name = rl.question(`Nhập tên muốn xóa: `)
+    } while (!checkNameForm(name));
+    let indexManager = listManager.findByNumberOfHouse(number)
     let tempIndex: number = -1;
-    if (index_manager !== -1) {
-        tempArr = listManager.getListManager()[index_manager].findByName(name2)
+    if (indexManager !== -1) {
+        tempArr = listManager.getListManager()[indexManager].findByName(name)
         console.table(tempArr)
-        let index_person = rl.question(`Chọn index thông tin nhân vật muốn xóa: `)
-        listManager.getListManager()[index_manager].getListPerson().forEach((item, index) => {
-            if (tempArr[+index_person].getName() == item.getName()
-                && tempArr[+index_person].getDob() == item.getDob()
-                && tempArr[+index_person].getJob() == item.getJob()
-                && tempArr[+index_person].getGender() == item.getGender()) {
+        let indexPerson = rl.question(`Chọn index thông tin nhân vật muốn xóa: `)
+        listManager.getListManager()[indexManager].getListPerson().forEach((item, index) => {
+            if (tempArr[+indexPerson].getName() == item.getName()
+                && tempArr[+indexPerson].getDob() == item.getDob()
+                && tempArr[+indexPerson].getJob() == item.getJob()
+                && tempArr[+indexPerson].getGender() == item.getGender()) {
                 tempIndex = index;
             }
         })
-        listManager.getListManager()[index_manager].getListPerson().splice(tempIndex, 1)
+        listManager.getListManager()[indexManager].getListPerson().splice(tempIndex, 1)
     }
 }
 
@@ -250,6 +260,7 @@ function Statistical_table() {
     let teenager = 0;
     let middleAged = 0;
     let seniorCitizen = 0;
+    let children = 0;
     for (let i = 0; i < listManager.getListManager().length; i++) {
         sum += listManager.getListManager()[i].getListPerson().length;
         for (let j = 0; j < listManager.getListManager()[i].getListPerson().length; j++) {
@@ -257,7 +268,9 @@ function Statistical_table() {
                 numberOfMale++;
             } else if (listManager.getListManager()[i].getListPerson()[j].getGender() == "Female") {
                 numberOfFemale++;
-                if (listManager.getListManager()[i].getListPerson()[j].getAge() > ageMinOfTeenager
+                if (listManager.getListManager()[i].getListPerson()[j].getAge() <= ageMinOfTeenager) {
+                    children++;
+                } else if (listManager.getListManager()[i].getListPerson()[j].getAge() > ageMinOfTeenager
                     && listManager.getListManager()[i].getListPerson()[j].getAge() < ageMaxOfTeenager) {
                     teenager++;
                 } else if (listManager.getListManager()[i].getListPerson()[j].getAge() >= ageMaxOfTeenager
@@ -269,8 +282,9 @@ function Statistical_table() {
             }
         }
     }
-    console.log(`Khu phố tổng cộng có ${listManager.getListManager().length} hộ dân, tổng ${sum} người. Trong đó có ${numberOfMale} nam và ${numberOfFemale} nữ`)
-    console.log(`Độ tuổi Trẻ Trâu có ${teenager} người; độ tuổi Trung Tuần có ${middleAged} người; độ tuổi Về Vườn có ${seniorCitizen} người`)
+    console.log(`Khu phố tổng cộng có ${listManager.getListManager().length} hộ dân, tổng ${sum} người. Trong đó có ${numberOfMale} nam và ${numberOfFemale} nữ`);
+    console.log(`Độ tuổi Nhi Đồng Thối Tai có ${children} người; độ tuổi Trẻ Trâu có ${teenager} người; 
+                    độ tuổi Trung Tuần có ${middleAged} người; độ tuổi Về Vườn có ${seniorCitizen} người`);
 }
 
 function List_Military() {
@@ -342,7 +356,7 @@ let listManager = new DistrictManager();
 
 const choiceDefault = -1;
 const ageOfSeniorCitizen = 54;
-const ageMinOfTeenager = 18;
+const ageMinOfTeenager = 6;
 const ageMaxOfTeenager = 35;
 
 let choice = choiceDefault;
