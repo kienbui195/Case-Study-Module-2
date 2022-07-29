@@ -168,26 +168,59 @@ function modify_Info() {
     console.log();
     console.log(`===== Sửa thông tin hộ dân =====`);
     let number_OfHouseNeed = rl.question(`Nhập số nhà muốn sửa thông tin: `);
-    let nameNeedEdit = rl.question(`Nhập tên người dân muốn sửa thông tin: `);
-    let index = listManager.findByNumberOfHouse(number_OfHouseNeed);
-    if (index !== -1) {
+    let index_Manager = listManager.findByNumberOfHouse(number_OfHouseNeed);
+    let name, gender, job, dob;
+    if (index_Manager !== -1) {
         console.log();
-        console.table(listManager.getListManager()[index].getListPerson());
+        console.table(listManager.getListManager()[index_Manager].getListPerson());
         let numberOfHouse = rl.question(`Nhập số nhà mới: `);
-        listManager.getListManager()[index].setNumberOfHouse(numberOfHouse);
-        (0, FixMenu_1.fixMenu)();
-        choiceToFix = +rl.question(`Mời bạn nhập lựa chọn: `);
-        switch (choiceToFix) {
-            case ChoiceToFix_1.ChoiceToFix.NAME:
-                break;
-            case ChoiceToFix_1.ChoiceToFix.DOB:
-                break;
-            case ChoiceToFix_1.ChoiceToFix.JOB:
-                break;
-            case ChoiceToFix_1.ChoiceToFix.GENDER:
-                break;
-            case ChoiceToFix_1.ChoiceToFix.GOBACK:
-                break;
+        listManager.getListManager()[index_Manager].setNumberOfHouse(numberOfHouse);
+        let nameNeedEdit = rl.question(`Nhập tên người dân muốn sửa thông tin: `);
+        let arrayPersonSameName = listManager.getListManager()[index_Manager].findByName(nameNeedEdit);
+        let index_Person_Needed = -1;
+        if (arrayPersonSameName.length > 0) {
+            console.table(arrayPersonSameName);
+            let index = +rl.question(`Nhập index của người dân muốn chỉnh sửa: `);
+            listManager.getListManager()[index_Manager].getListPerson().forEach((household, index_househole) => {
+                if (arrayPersonSameName[index].getName() == household.getName()
+                    && arrayPersonSameName[index].getDob() == household.getDob()
+                    && arrayPersonSameName[index].getJob() == household.getJob()
+                    && arrayPersonSameName[index].getGender() == household.getGender()) {
+                    index_Person_Needed = index_househole;
+                }
+            });
+            console.table(listManager.getListManager()[index_Manager].getListPerson()[index_Person_Needed]);
+            (0, FixMenu_1.fixMenu)();
+            choiceToFix = +rl.question(`Mời bạn nhập lựa chọn: `);
+            switch (choiceToFix) {
+                case ChoiceToFix_1.ChoiceToFix.NAME:
+                    name = rl.question(`Nhập tên: `);
+                    listManager.getListManager()[index_Manager].getListPerson()[index_Person_Needed].setName(name);
+                    break;
+                case ChoiceToFix_1.ChoiceToFix.DOB:
+                    do {
+                        dob = rl.question(`Nhập năm sinh: `);
+                    } while ((0, RegEx_Age_1.checkAgeForm)(dob));
+                    listManager.getListManager()[index_Manager].getListPerson()[index_Person_Needed].setDob(dob);
+                    break;
+                case ChoiceToFix_1.ChoiceToFix.JOB:
+                    do {
+                        job = rl.question(`Nhập nghề nghiệp: `);
+                    } while ((0, RegEx_Job_1.checkJobForm)(job));
+                    listManager.getListManager()[index_Manager].getListPerson()[index_Person_Needed].setDob(job);
+                    break;
+                case ChoiceToFix_1.ChoiceToFix.GENDER:
+                    do {
+                        gender = rl.question(`Nhập giới tính: `);
+                    } while ((0, RegEx_Gender_1.checkGenderForm)(gender));
+                    listManager.getListManager()[index_Manager].getListPerson()[index_Person_Needed].setDob(gender);
+                    break;
+                case ChoiceToFix_1.ChoiceToFix.GOBACK:
+                    break;
+            }
+        }
+        else {
+            console.log(`Không tồn tại tên mà bạn muốn tìm kiếm!`);
         }
     }
     else
