@@ -2,46 +2,40 @@ import {DistrictManager} from "./src/District";
 import {Household} from "./src/Household";
 import {Person} from "./src/Person"
 import * as rl from "readline-sync";
-import {checkNumberOfHouse} from "./checkFunction/RegEx_NumberOfHouse";
+import {checkNumberOfHouse} from "./CheckFunction/RegEx_NumberOfHouse";
 import {mainMenu} from "./Menu/MainMenu";
 import {addMenu} from "./Menu/AddMenu";
 import {showMenu} from "./Menu/ShowMenu";
 import {deleteMenu} from "./Menu/DeleteMenu";
 import {managerMenu} from "./Menu/ManagerMenu";
-import {ChoiceMainMenu} from "./Enum/ChoiceMenu1";
+import {ChoiceMainMenu} from "./Enum/ChoiceMainMenu";
 import {ChoiceAddMenu} from "./Enum/ChoiceAddMenu";
 import {ChoiceShowMenu} from "./Enum/ChoiceShowMenu";
-import {ChoiceModifyMenu} from "./Enum/ChoiceModifyMenu";
 import {ChoiceDeleteMenu} from "./Enum/ChoiceDeleteMenu";
 import {ChoiceManagerMenu} from "./Enum/ChoiceManagerMenu";
-import {checkAgeForm} from "./checkFunction/RegEx_Age";
-import {checkJobForm} from "./checkFunction/RegEx_Job";
-import {checkGenderForm} from "./checkFunction/RegEx_Gender";
+import {checkAgeForm} from "./CheckFunction/RegEx_Age";
+import {checkJobForm} from "./CheckFunction/RegEx_Job";
+import {checkGenderForm} from "./CheckFunction/RegEx_Gender";
 import {fixMenu} from "./Menu/FixMenu";
 import {ChoiceToFix} from "./Enum/ChoiceToFix";
+import {checkNameForm} from "./CheckFunction/RegEx_Name";
+import {checkNumberOfMemberForm} from "./CheckFunction/RegEx_NumberOfMember";
 
-let listManager = new DistrictManager();
-
-
-let choice = -1;
-let choiceAddInfo = -1;
-let choiceShowInfo = -1;
-let choiceDeleteInfo = -1;
-let choiceManger = -1;
-let choiceToFix = -1;
 
 export function addPersonInfo() {
     let dob: string, gender: string, job: string, name: string;
-    name = rl.question(`Nhập tên thành viên: `);
+    do {
+        name = rl.question(`Nhập tên: `);
+    } while (!checkNameForm(name));
     do {
         dob = rl.question(`Nhập năm sinh: `);
-    } while (checkAgeForm(dob));
+    } while (!checkAgeForm(dob));
     do {
         job = rl.question(`Nhập nghề nghiệp: `);
-    } while (checkJobForm(job));
+    } while (!checkJobForm(job));
     do {
         gender = rl.question(`Nhập giới tính: `);
-    } while (checkGenderForm(gender));
+    } while (!checkGenderForm(gender));
     let person = new Person(name, dob, job, gender);
     return person;
 }
@@ -49,11 +43,13 @@ export function addPersonInfo() {
 function addNewInfo() {
     console.log();
     console.log(`====== Thêm thông tin hộ dân mới ======`);
-    let numberOfHouse;
+    let numberOfHouse: string, numberOfMember: string;
     do {
         numberOfHouse = rl.question(`Nhập số nhà: `);
-    } while (checkNumberOfHouse(numberOfHouse));
-    let numberOfMember = rl.question(`Nhập số thành viên muốn thêm: `);
+    } while (!checkGenderForm(numberOfHouse) && listManager.findByNumberOfHouse(numberOfHouse) != -1);
+    do {
+        numberOfMember = rl.question(`Nhập số thành viên muốn thêm: `);
+    } while (!checkNumberOfMemberForm(numberOfMember));
     let household = new Household(numberOfMember, numberOfHouse);
     for (let i = 1; i <= +numberOfMember; i++) {
         console.log();
@@ -69,14 +65,17 @@ function addPlusInfo() {
         console.log(`Không có thông tin. Mời bạn thêm thông tin!`);
     } else {
         let numberOfHouseNeed: string;
+        let input: string;
         console.log(`======= Thêm thông tin vào hộ dân sẵn có =======`);
         do {
             numberOfHouseNeed = rl.question(`Nhập số nhà muốn thêm: `);
-        } while (checkNumberOfHouse(numberOfHouseNeed));
+        } while (!checkNumberOfHouse(numberOfHouseNeed));
         let index = listManager.findByNumberOfHouse(numberOfHouseNeed);
         if (listManager.findByNumberOfHouse(numberOfHouseNeed) !== -1) {
-            let input = +rl.question(`Nhập số lượng thành viên muốn thêm: `);
-            for (let i = 0; i < input; i++) {
+            do{
+                input = rl.question(`Nhập số lượng thành viên muốn thêm: `);
+            } while (!checkNumberOfMemberForm(input));
+            for (let i = 0; i < +input; i++) {
                 console.log();
                 let person = addPersonInfo();
                 listManager.getListManager()[index].setListPerson(person);
@@ -102,13 +101,15 @@ function add_Info() {
 
 function showListDistrict() {
     console.log();
+    let count = 1;
     if (listManager.getListManager().length == 0) {
         console.log(`Không có thông tin. Mời nhập thêm thông tin`);
     } else {
         console.log(`===== Hiển thị danh sách hộ dân trong toàn khu phố =====`);
         console.log();
         for (const item of listManager.getListManager()) {
-            console.log(`Số nhà ${item.getNumberOfHouse()} - Số nhân khẩu: ${item.getListPerson().length}`);
+            console.log(`STT ${count}. Số nhà ${item.getNumberOfHouse()} - Số nhân khẩu: ${item.getListPerson().length}`);
+            count++;
         }
     }
 }
@@ -116,8 +117,8 @@ function showListDistrict() {
 function showPerson() {
     console.log();
     console.log(`===== Hiển thị thông tin người dân theo từng hộ dân =====`);
-    let numberOfHouse_Need = rl.question(`Nhập số nhà muốn xem thông tin người dân: `);
-    let index = listManager.findByNumberOfHouse(numberOfHouse_Need);
+    let numberOfHouseNeed = rl.question(`Nhập số nhà muốn xem thông tin người dân: `);
+    let index = listManager.findByNumberOfHouse(numberOfHouseNeed);
     if (index !== -1) {
         if (listManager.getListManager()[index].getListPerson().length == 0) {
             console.log(`Không có thông tin! Mời nhập thêm thông tin`);
@@ -146,13 +147,16 @@ function show_Info() {
 function modify_Info() {
     console.log();
     console.log(`===== Sửa thông tin hộ dân =====`);
-    let number_OfHouseNeed = rl.question(`Nhập số nhà muốn sửa thông tin: `);
-    let index_Manager = listManager.findByNumberOfHouse(number_OfHouseNeed);
+    let numberOfHouseNeed = rl.question(`Nhập số nhà muốn sửa thông tin: `);
+    let index_Manager = listManager.findByNumberOfHouse(numberOfHouseNeed);
     let name: string, gender: string, job: string, dob: string;
     if (index_Manager !== -1) {
         console.log()
         console.table(listManager.getListManager()[index_Manager].getListPerson());
-        let numberOfHouse = rl.question(`Nhập số nhà mới: `);
+        let numberOfHouse: string;
+        do {
+            numberOfHouse = rl.question(`Nhập số nhà: `);
+        } while (!checkGenderForm(numberOfHouse) && listManager.findByNumberOfHouse(numberOfHouse) != -1);
         listManager.getListManager()[index_Manager].setNumberOfHouse(numberOfHouse);
         let nameNeedEdit = rl.question(`Nhập tên người dân muốn sửa thông tin: `);
         let arrayPersonSameName = listManager.getListManager()[index_Manager].findByName(nameNeedEdit);
@@ -173,25 +177,27 @@ function modify_Info() {
             choiceToFix = +rl.question(`Mời bạn nhập lựa chọn: `);
             switch (choiceToFix) {
                 case ChoiceToFix.NAME:
-                    name = rl.question(`Nhập tên: `);
+                    do {
+                        name = rl.question(`Nhập tên: `);
+                    } while (!checkNameForm(name));
                     listManager.getListManager()[index_Manager].getListPerson()[index_Person_Needed].setName(name);
                     break;
                 case ChoiceToFix.DOB:
                     do {
                         dob = rl.question(`Nhập năm sinh: `);
-                    } while (checkAgeForm(dob));
+                    } while (!checkAgeForm(dob));
                     listManager.getListManager()[index_Manager].getListPerson()[index_Person_Needed].setDob(dob);
                     break;
                 case ChoiceToFix.JOB:
                     do {
                         job = rl.question(`Nhập nghề nghiệp: `);
-                    } while (checkJobForm(job));
+                    } while (!checkJobForm(job));
                     listManager.getListManager()[index_Manager].getListPerson()[index_Person_Needed].setDob(job);
                     break;
                 case ChoiceToFix.GENDER:
                     do {
                         gender = rl.question(`Nhập giới tính: `);
-                    } while (checkGenderForm(gender));
+                    } while (!checkGenderForm(gender));
                     listManager.getListManager()[index_Manager].getListPerson()[index_Person_Needed].setDob(gender);
                     break;
                 case ChoiceToFix.GOBACK:
@@ -243,8 +249,8 @@ function Statistical_table() {
     let numberOfMale = 0;
     let numberOfFemale = 0;
     let teenager = 0;
-    let middle_aged = 0;
-    let senior_citizen = 0;
+    let middleAged = 0;
+    let seniorCitizen = 0;
     for (let i = 0; i < listManager.getListManager().length; i++) {
         sum += listManager.getListManager()[i].getListPerson().length;
         for (let j = 0; j < listManager.getListManager()[i].getListPerson().length; j++) {
@@ -252,20 +258,20 @@ function Statistical_table() {
                 numberOfMale++;
             } else if (listManager.getListManager()[i].getListPerson()[j].getGender() == "Female") {
                 numberOfFemale++;
-                if (listManager.getListManager()[i].getListPerson()[j].getAge() > 18
-                    && listManager.getListManager()[i].getListPerson()[j].getAge() < 35) {
+                if (listManager.getListManager()[i].getListPerson()[j].getAge() > ageMinOfTeenager
+                    && listManager.getListManager()[i].getListPerson()[j].getAge() < ageMaxOfTeenager) {
                     teenager++;
-                } else if (listManager.getListManager()[i].getListPerson()[j].getAge() >= 35
-                    && listManager.getListManager()[i].getListPerson()[j].getAge() < 54) {
-                    middle_aged++;
-                } else if (listManager.getListManager()[i].getListPerson()[j].getAge() >= 54) {
-                    senior_citizen++
+                } else if (listManager.getListManager()[i].getListPerson()[j].getAge() >= ageMaxOfTeenager
+                    && listManager.getListManager()[i].getListPerson()[j].getAge() < ageOfSeniorCitizen) {
+                    middleAged++;
+                } else if (listManager.getListManager()[i].getListPerson()[j].getAge() >= ageOfSeniorCitizen) {
+                    seniorCitizen++
                 }
             }
         }
     }
-    console.log(`Khu phố tổng cộng có ${sum} người. Trong đó có ${numberOfMale} nam và ${numberOfFemale} nữ`)
-    console.log(`Độ tuổi Trẻ Trâu có ${teenager} người; độ tuổi Trung Tuần có ${middle_aged} người; độ tuổi Về Vườn có ${senior_citizen} người`)
+    console.log(`Khu phố tổng cộng có ${listManager.getListManager().length} hộ dân, tổng ${sum} người. Trong đó có ${numberOfMale} nam và ${numberOfFemale} nữ`)
+    console.log(`Độ tuổi Trẻ Trâu có ${teenager} người; độ tuổi Trung Tuần có ${middleAged} người; độ tuổi Về Vườn có ${seniorCitizen} người`)
 }
 
 function List_Military() {
@@ -274,8 +280,8 @@ function List_Military() {
     let arrayManagerMilitary: Person[] = [];
     for (let i = 0; i < listManager.getListManager().length; i++) {
         for (let j = 0; j < listManager.getListManager()[i].getListPerson().length; j++) {
-            if (listManager.getListManager()[i].getListPerson()[j].getAge() >= 18
-                && listManager.getListManager()[i].getListPerson()[j].getAge() <= 25
+            if (listManager.getListManager()[i].getListPerson()[j].getAge() >= ageMinOfTeenager
+                && listManager.getListManager()[i].getListPerson()[j].getAge() <= ageMaxOfTeenager
                 && listManager.getListManager()[i].getListPerson()[j].getGender() === 'Male') {
                 arrayManagerMilitary.push(listManager.getListManager()[i].getListPerson()[j])
             }
@@ -290,7 +296,7 @@ function List_Old_Person() {
     let arrayOldPeople: Person[] = []
     for (let i = 0; i < listManager.getListManager().length; i++) {
         for (let j = 0; j < listManager.getListManager()[i].getListPerson().length; j++) {
-            if (listManager.getListManager()[i].getListPerson()[j].getAge() >= 54) {
+            if (listManager.getListManager()[i].getListPerson()[j].getAge() >= ageOfSeniorCitizen) {
                 arrayOldPeople.push(listManager.getListManager()[i].getListPerson()[j])
             }
         }
@@ -331,11 +337,25 @@ function manager_Info() {
     }
 }
 
+
 //main
-while (choice !== 0) {
+let listManager = new DistrictManager();
+
+const choiceDefault = -1;
+const ageOfSeniorCitizen = 54;
+const ageMinOfTeenager = 18;
+const ageMaxOfTeenager = 35;
+
+let choice = choiceDefault;
+let choiceAddInfo = choiceDefault;
+let choiceShowInfo = choiceDefault;
+let choiceDeleteInfo = choiceDefault;
+let choiceManger = choiceDefault;
+let choiceToFix = choiceDefault;
+
+while (choice !== ChoiceMainMenu.EXIT) {
     mainMenu();
     choice = +rl.question(`Mời bạn nhập lựa chọn: `);
-
     switch (choice) {
         case ChoiceMainMenu.ADDINFO:
             add_Info();
@@ -354,6 +374,9 @@ while (choice !== 0) {
             break;
     }
 }
+
+
+
 
     
     
