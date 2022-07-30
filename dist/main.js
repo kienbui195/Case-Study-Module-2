@@ -167,12 +167,43 @@ function show_Info() {
             break;
     }
 }
+function choiceFixMenu(indexManager, index_Person_Needed) {
+    console.table(listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed]);
+    let name, gender, job, dob;
+    (0, FixMenu_1.fixMenu)();
+    choiceToFix = +rl.question(`Mời bạn nhập lựa chọn: `);
+    switch (choiceToFix) {
+        case ChoiceToFix_1.ChoiceToFix.NAME:
+            do {
+                name = rl.question(`Nhập tên: `);
+            } while (!(0, RegEx_Name_1.checkNameForm)(name));
+            listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setName(name);
+            break;
+        case ChoiceToFix_1.ChoiceToFix.DOB:
+            do {
+                dob = rl.question(`Nhập năm sinh: `);
+            } while (!(0, RegEx_Age_1.checkAgeForm)(dob));
+            listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setDob(dob);
+            break;
+        case ChoiceToFix_1.ChoiceToFix.JOB:
+            do {
+                job = rl.question(`Nhập nghề nghiệp: `);
+            } while (!(0, RegEx_Job_1.checkJobForm)(job));
+            listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setDob(job);
+            break;
+        case ChoiceToFix_1.ChoiceToFix.GENDER:
+            do {
+                gender = rl.question(`Nhập giới tính: `);
+            } while (!(0, RegEx_Gender_1.checkGenderForm)(gender));
+            listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setDob(gender);
+            break;
+    }
+}
 function modify_Info() {
     console.log();
     console.log(`===== Sửa thông tin hộ dân =====`);
     let numberOfHouseNeed = rl.question(`Nhập số nhà muốn sửa thông tin: `);
     let indexManager = listManager.findByNumberOfHouse(numberOfHouseNeed);
-    let name, gender, job, dob;
     if (indexManager !== -1) {
         console.log();
         console.table(listManager.getListManager()[indexManager].getListPerson());
@@ -195,37 +226,9 @@ function modify_Info() {
                     index_Person_Needed = index_househole;
                 }
             });
-            console.table(listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed]);
-            (0, FixMenu_1.fixMenu)();
-            choiceToFix = +rl.question(`Mời bạn nhập lựa chọn: `);
-            switch (choiceToFix) {
-                case ChoiceToFix_1.ChoiceToFix.NAME:
-                    do {
-                        name = rl.question(`Nhập tên: `);
-                    } while (!(0, RegEx_Name_1.checkNameForm)(name));
-                    listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setName(name);
-                    break;
-                case ChoiceToFix_1.ChoiceToFix.DOB:
-                    do {
-                        dob = rl.question(`Nhập năm sinh: `);
-                    } while (!(0, RegEx_Age_1.checkAgeForm)(dob));
-                    listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setDob(dob);
-                    break;
-                case ChoiceToFix_1.ChoiceToFix.JOB:
-                    do {
-                        job = rl.question(`Nhập nghề nghiệp: `);
-                    } while (!(0, RegEx_Job_1.checkJobForm)(job));
-                    listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setDob(job);
-                    break;
-                case ChoiceToFix_1.ChoiceToFix.GENDER:
-                    do {
-                        gender = rl.question(`Nhập giới tính: `);
-                    } while (!(0, RegEx_Gender_1.checkGenderForm)(gender));
-                    listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setDob(gender);
-                    break;
-                case ChoiceToFix_1.ChoiceToFix.GOBACK:
-                    break;
-            }
+            do {
+                choiceFixMenu(indexManager, index_Person_Needed);
+            } while (choiceToFix != ChoiceToFix_1.ChoiceToFix.GOBACK);
         }
         else {
             console.log(`Không tồn tại tên mà bạn muốn tìm kiếm!`);
@@ -328,7 +331,11 @@ function List_Military() {
             }
         }
     }
-    console.table(arrayManagerMilitary);
+    if (arrayManagerMilitary.length == 0) {
+        console.log(`Danh sách không tồn tại!`);
+    }
+    else
+        console.table(arrayManagerMilitary);
 }
 function List_Old_Person() {
     console.log();
@@ -341,7 +348,11 @@ function List_Old_Person() {
             }
         }
     }
-    console.table(arrayOldPeople);
+    if (arrayOldPeople.length == 0) {
+        console.log(`Danh sách không tồn tại!`);
+    }
+    else
+        console.table(arrayOldPeople);
 }
 function delete_Info() {
     (0, DeleteMenu_1.deleteMenu)();
