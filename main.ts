@@ -45,7 +45,7 @@ function addNewInfo() {
     let numberOfHouse: string, numberOfMember: string;
     do {
         numberOfHouse = rl.question(`Nhập số nhà: `);
-    } while (!checkGenderForm(numberOfHouse) && listManager.findByNumberOfHouse(numberOfHouse) != -1);
+    } while (!checkGenderForm(numberOfHouse) && listManager.findByNumberOfHouse(numberOfHouse) != nonentityIndexHouseOfHousehold);
     do {
         numberOfMember = rl.question(`Nhập số thành viên muốn thêm: `);
     } while (!checkNumberOfMemberForm(numberOfMember));
@@ -70,7 +70,7 @@ function addPlusInfo() {
             numberOfHouseNeed = rl.question(`Nhập số nhà muốn thêm: `);
         } while (!checkNumberOfHouse(numberOfHouseNeed));
         let index = listManager.findByNumberOfHouse(numberOfHouseNeed);
-        if (listManager.findByNumberOfHouse(numberOfHouseNeed) !== -1) {
+        if (listManager.findByNumberOfHouse(numberOfHouseNeed) != nonentityIndexHouseOfHousehold) {
             do{
                 input = rl.question(`Nhập số lượng thành viên muốn thêm: `);
             } while (!checkNumberOfMemberForm(input));
@@ -100,14 +100,14 @@ function add_Info() {
 
 function showListDistrict() {
     console.log();
-    let count = 1;
+    let count = countDefault;
     if (listManager.getListManager().length == 0) {
         console.log(`Không có thông tin. Mời nhập thêm thông tin`);
     } else {
         console.log(`===== Hiển thị danh sách hộ dân trong toàn khu phố =====`);
         console.log();
         for (const item of listManager.getListManager()) {
-            console.log(`STT ${count}. Số nhà ${item.getNumberOfHouse()} - Số nhân khẩu: ${item.getListPerson().length}`);
+            console.log(`STT ${count + 1}. Số nhà ${item.getNumberOfHouse()} - Số nhân khẩu: ${item.getListPerson().length}`);
             count++;
         }
     }
@@ -118,7 +118,7 @@ function showPerson() {
     console.log(`===== Hiển thị thông tin người dân theo từng hộ dân =====`);
     let numberOfHouseNeed = rl.question(`Nhập số nhà muốn xem thông tin người dân: `);
     let index = listManager.findByNumberOfHouse(numberOfHouseNeed);
-    if (index !== -1) {
+    if (index !== nonentityIndexHouseOfHousehold) {
         if (listManager.getListManager()[index].getListPerson().length == 0) {
             console.log(`Không có thông tin! Mời nhập thêm thông tin`);
         } else {
@@ -143,8 +143,8 @@ function show_Info() {
 }
 
 
-function choiceFixMenu(indexManager: number, index_Person_Needed: number) {
-    console.table(listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed]);
+function choiceFixMenu(indexManager: number, indexPersonNeedEdit: number) {
+    console.table(listManager.getListManager()[indexManager].getListPerson()[indexPersonNeedEdit]);
     let name: string, gender: string, job: string, dob: string;
     fixMenu();
     choiceToFix = +rl.question(`Mời bạn nhập lựa chọn: `);
@@ -153,27 +153,43 @@ function choiceFixMenu(indexManager: number, index_Person_Needed: number) {
             do {
                 name = rl.question(`Nhập tên: `);
             } while (!checkNameForm(name));
-            listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setName(name);
+            listManager.getListManager()[indexManager].getListPerson()[indexPersonNeedEdit].setName(name);
             break;
         case ChoiceToFix.DOB:
             do {
                 dob = rl.question(`Nhập năm sinh: `);
             } while (!checkAgeForm(dob));
-            listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setDob(dob);
+            listManager.getListManager()[indexManager].getListPerson()[indexPersonNeedEdit].setDob(dob);
             break;
         case ChoiceToFix.JOB:
             do {
                 job = rl.question(`Nhập nghề nghiệp: `);
             } while (!checkJobForm(job));
-            listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setDob(job);
+            listManager.getListManager()[indexManager].getListPerson()[indexPersonNeedEdit].setJob(job);
             break;
         case ChoiceToFix.GENDER:
             do {
                 gender = rl.question(`Nhập giới tính: `);
             } while (!checkGenderForm(gender));
-            listManager.getListManager()[indexManager].getListPerson()[index_Person_Needed].setDob(gender);
+            listManager.getListManager()[indexManager].getListPerson()[indexPersonNeedEdit].setGender(gender);
             break;
     }
+}
+
+function findExactlyPersonByName(arrayPersonSameName: Person[], indexManager: number): number {
+    let indexPersonNeeded: number;
+    console.table(arrayPersonSameName);
+    let index = +rl.question(`Nhập index của người dân muốn chỉnh sửa: `);
+    listManager.getListManager()[indexManager].getListPerson().forEach((household, indexHousehold) => {
+        if (arrayPersonSameName[index].getName() == household.getName()
+            && arrayPersonSameName[index].getDob() == household.getDob()
+            && arrayPersonSameName[index].getJob() == household.getJob()
+            && arrayPersonSameName[index].getGender() == household.getGender()) {
+            indexPersonNeeded = indexHousehold;
+        }
+    });
+    // @ts-ignore
+    return indexPersonNeeded;
 }
 
 function modify_Info() {
@@ -181,30 +197,21 @@ function modify_Info() {
     console.log(`===== Sửa thông tin hộ dân =====`);
     let numberOfHouseNeed = rl.question(`Nhập số nhà muốn sửa thông tin: `);
     let indexManager = listManager.findByNumberOfHouse(numberOfHouseNeed);
-    if (indexManager !== -1) {
-        console.log()
+    if (indexManager != nonentityIndexHouseOfHousehold) {
+        console.log();
         console.table(listManager.getListManager()[indexManager].getListPerson());
         let numberOfHouse: string;
         do {
             numberOfHouse = rl.question(`Nhập số nhà mới: `);
-        } while (!checkGenderForm(numberOfHouse) && listManager.findByNumberOfHouse(numberOfHouse) != indexHouseOfHousehold);
+        } while (!checkGenderForm(numberOfHouse) && listManager.findByNumberOfHouse(numberOfHouse) != nonentityIndexHouseOfHousehold);
         listManager.getListManager()[indexManager].setNumberOfHouse(numberOfHouse);
         let nameNeedEdit = rl.question(`Nhập tên người dân muốn sửa thông tin: `);
         let arrayPersonSameName = listManager.getListManager()[indexManager].findByName(nameNeedEdit);
-        let index_Person_Needed: number = -1;
+        let indexPersonNeedEdit: number;
         if (arrayPersonSameName.length > 0) {
-            console.table(arrayPersonSameName);
-            let index = +rl.question(`Nhập index của người dân muốn chỉnh sửa: `);
-            listManager.getListManager()[indexManager].getListPerson().forEach((household,index_househole) => {
-                if (arrayPersonSameName[index].getName() == household.getName()
-                    && arrayPersonSameName[index].getDob() == household.getDob()
-                    && arrayPersonSameName[index].getJob() == household.getJob()
-                    && arrayPersonSameName[index].getGender() == household.getGender()) {
-                    index_Person_Needed = index_househole;
-                }
-            });
+            indexPersonNeedEdit = findExactlyPersonByName(arrayPersonSameName, indexManager);
             do {
-                choiceFixMenu(indexManager, index_Person_Needed);
+                choiceFixMenu(indexManager, indexPersonNeedEdit);
             } while (choiceToFix != ChoiceToFix.GOBACK);
         } else {
                 console.log(`Không tồn tại tên mà bạn muốn tìm kiếm!`);
@@ -214,47 +221,61 @@ function modify_Info() {
 
 
 function DeleteHousehold() {
-    console.log()
-    console.log(`===== Xóa thông tin hộ dân =====`)
+    console.log();
+    console.log(`===== Xóa thông tin hộ dân =====`);
     let number: string;
+    showListDistrict();
     do {
-        number = rl.question(`Nhập số nhà muốn xóa: `)
+        number = rl.question(`Nhập số nhà muốn xóa: `);
     } while (!checkNumberOfHouse(number));
-    let index = listManager.findByNumberOfHouse(number)
-    if (index !== -1) {
+    let index = listManager.findByNumberOfHouse(number);
+    if (index !== nonentityIndexHouseOfHousehold) {
         listManager.getListManager().splice(index, 1);
     } else console.log(`Không tồn tại số nhà!`);
+}
+
+function findExactlyIndexOfPersonNeedDelete(indexManager: number, listSameName: Person[], indexPerson: string) {
+    let tempIndex: number;
+    listManager.getListManager()[indexManager].getListPerson().forEach((item, index) => {
+        if (listSameName[+indexPerson].getName() == item.getName()
+            && listSameName[+indexPerson].getDob() == item.getDob()
+            && listSameName[+indexPerson].getJob() == item.getJob()
+            && listSameName[+indexPerson].getGender() == item.getGender()) {
+            tempIndex = index;
+        }
+    });
+    // @ts-ignore
+    return tempIndex;
+}
+
+function deleteByName(indexManager: number, listSameName: Person[]) {
+    let name: string;
+    let tempIndex: number;
+    console.table(listManager.getListManager()[indexManager].getListPerson());
+    do {
+        name = rl.question(`Nhập tên muốn xóa: `);
+    } while (!checkNameForm(name));
+    listSameName = listManager.getListManager()[indexManager].findByName(name);
+    console.table(listSameName);
+    let indexPersonOfListSameName = rl.question(`Chọn index thông tin nhân vật muốn xóa: `);
+    tempIndex = findExactlyIndexOfPersonNeedDelete(indexManager, listSameName, indexPersonOfListSameName);
+    // @ts-ignore
+    listManager.getListManager()[indexManager].getListPerson().splice(tempIndex, 1);
 }
 
 function DeletePerson() {
     console.log();
     console.log(`===== Xóa thông tin người dân =====`);
-    let tempArr: Person[] = [];
-    let number: string, name: string;
+    let listSameName: Person[] = [];
+    let number: string;
     do {
         number = rl.question(`Nhập số nhà: `);
     } while (!checkNumberOfHouse(number));
     let indexManager = listManager.findByNumberOfHouse(number);
-    let tempIndex: number = -1;
-    if (indexManager !== -1) {
-        console.table(listManager.getListManager()[indexManager].getListPerson());
-        do {
-            name = rl.question(`Nhập tên muốn xóa: `);
-        } while (!checkNameForm(name));
-        tempArr = listManager.getListManager()[indexManager].findByName(name);
-        console.log(tempArr);
-        let indexPerson = rl.question(`Chọn index thông tin nhân vật muốn xóa: `);
-        listManager.getListManager()[indexManager].getListPerson().forEach((item, index) => {
-            if (tempArr[+indexPerson].getName() == item.getName()
-                && tempArr[+indexPerson].getDob() == item.getDob()
-                && tempArr[+indexPerson].getJob() == item.getJob()
-                && tempArr[+indexPerson].getGender() == item.getGender()) {
-                tempIndex = index;
-            }
-        })
-        listManager.getListManager()[indexManager].getListPerson().splice(tempIndex, 1);
+    if (indexManager !== nonentityIndexHouseOfHousehold) {
+        deleteByName(indexManager, listSameName);
     } else {
-        console.log(``)
+        console.log(`Không tồn tại số nhà!`);
     }
 }
 
@@ -290,13 +311,13 @@ function Statistical_table() {
     let middleAged = countDefault;
     let seniorCitizen = countDefault;
     let children = countDefault;
-    for (let i = 0; i < listManager.getListManager().length; i++) {
-        sum += listManager.getListManager()[i].getListPerson().length;
-        for (let j = 0; j < listManager.getListManager()[i].getListPerson().length; j++) {
-            countGender(i, j, numberOfMale, numberOfFemale);
-            countAgeInterval(i, j, children, teenager, middleAged, seniorCitizen);
-        }
-    }
+    listManager.getListManager().forEach((household,indexHousehold) => {
+        sum += household.getListPerson().length;
+        listManager.getListManager()[indexHousehold].getListPerson().forEach((persons,indexPerson) => {
+            countGender(indexHousehold,indexPerson,numberOfMale,numberOfMale);
+            countAgeInterval(indexHousehold,indexPerson,children,teenager,middleAged,seniorCitizen);
+        });
+    });
     console.log(`Khu phố tổng cộng có ${listManager.getListManager().length} hộ dân, tổng ${sum} người. Trong đó có ${numberOfMale} nam và ${numberOfFemale} nữ`);
     console.log(`Độ tuổi Nhi Đồng Thối Tai có ${children} người; độ tuổi Trẻ Trâu có ${teenager} người; 
                     độ tuổi Trung Tuần có ${middleAged} người; độ tuổi Về Vườn có ${seniorCitizen} người`);
@@ -380,7 +401,7 @@ const ageMaxOfTeenager = 35;
 const ageMinOfMilitary = 18;
 const ageMaxOfMilitary = 25;
 const countDefault = 0;
-const indexHouseOfHousehold = -1;
+const nonentityIndexHouseOfHousehold = -1;
 
 let choice = choiceDefault;
 let choiceAddInfo = choiceDefault;

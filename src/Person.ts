@@ -44,7 +44,7 @@ export class Person {
     }
 
     getAge(): number {
-        if (new Date().getFullYear() - +this._dob > 0)
+        if (((new Date().getFullYear()) - +this._dob) > 0)
             return (new Date().getFullYear() - +this._dob);
         else return this.getAge();
     }
