@@ -4,5 +4,6 @@ export function fixMenu() {
     console.log(`2. Sửa năm sinh`);
     console.log(`3. Sửa nghề nghiệp`);
     console.log(`4. Sửa giới tính`);
+    console.log(`5. Sửa số nhà`);
     console.log(`0. Quay về`);
 }

@@ -10,14 +10,6 @@ export class Household {
         this._numberOfHouse = numberOfHouse;
     }
 
-    getNumberOfMember(): string {
-        return this._numberOfMember;
-    }
-
-    setNumberOfMember(value: string) {
-        this._numberOfMember = value;
-    }
-
     getNumberOfHouse(): string {
         return this._numberOfHouse;
     }
@@ -36,7 +28,7 @@ export class Household {
 
     findByName(data: string): Person[] {
         let temp: Person[] = [];
-        this._listPerson.forEach((value,index) => {
+        this._listPerson.forEach((value) => {
             if (value.getName() === data) {
                 temp.push(value)
             }

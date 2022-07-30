@@ -3,5 +3,6 @@ export enum ChoiceToFix {
     DOB,
     JOB,
     GENDER,
+    NUMBEROFHOUSE,
     GOBACK = 0
 }

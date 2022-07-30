@@ -46,6 +46,7 @@ const FixMenu_1 = require("./Menu/FixMenu");
 const ChoiceToFix_1 = require("./Enum/ChoiceToFix");
 const RegEx_Name_1 = require("./CheckFunction/RegEx_Name");
 const RegEx_NumberOfMember_1 = require("./CheckFunction/RegEx_NumberOfMember");
+const RegEx_Question_1 = require("./CheckFunction/RegEx_Question");
 function addPersonInfo() {
     let dob, gender, job, name;
     do {
@@ -169,7 +170,7 @@ function show_Info() {
 }
 function choiceFixMenu(indexManager, indexPersonNeedEdit) {
     console.table(listManager.getListManager()[indexManager].getListPerson()[indexPersonNeedEdit]);
-    let name, gender, job, dob;
+    let name, gender, job, dob, numberOfHouse;
     (0, FixMenu_1.fixMenu)();
     choiceToFix = +rl.question(`Mời bạn nhập lựa chọn: `);
     switch (choiceToFix) {
@@ -197,6 +198,12 @@ function choiceFixMenu(indexManager, indexPersonNeedEdit) {
             } while (!(0, RegEx_Gender_1.checkGenderForm)(gender));
             listManager.getListManager()[indexManager].getListPerson()[indexPersonNeedEdit].setGender(gender);
             break;
+        case ChoiceToFix_1.ChoiceToFix.NUMBEROFHOUSE:
+            do {
+                numberOfHouse = rl.question(`Nhập số nhà mới: `);
+            } while (!(0, RegEx_Gender_1.checkGenderForm)(numberOfHouse) && listManager.findByNumberOfHouse(numberOfHouse) != nonentityIndexHouseOfHousehold);
+            listManager.getListManager()[indexManager].setNumberOfHouse(numberOfHouse);
+            break;
     }
 }
 function findExactlyPersonByName(arrayPersonSameName, indexManager) {
@@ -222,11 +229,6 @@ function modify_Info() {
     if (indexManager != nonentityIndexHouseOfHousehold) {
         console.log();
         console.table(listManager.getListManager()[indexManager].getListPerson());
-        let numberOfHouse;
-        do {
-            numberOfHouse = rl.question(`Nhập số nhà mới: `);
-        } while (!(0, RegEx_Gender_1.checkGenderForm)(numberOfHouse) && listManager.findByNumberOfHouse(numberOfHouse) != nonentityIndexHouseOfHousehold);
-        listManager.getListManager()[indexManager].setNumberOfHouse(numberOfHouse);
         let nameNeedEdit = rl.question(`Nhập tên người dân muốn sửa thông tin: `);
         let arrayPersonSameName = listManager.getListManager()[indexManager].findByName(nameNeedEdit);
         let indexPersonNeedEdit;
@@ -249,11 +251,19 @@ function DeleteHousehold() {
     let number;
     showListDistrict();
     do {
-        number = rl.question(`Nhập số nhà muốn xóa: `);
+        number = rl.question(`Nhập số nhà muốn xóa thông tin: `);
     } while (!(0, RegEx_NumberOfHouse_1.checkNumberOfHouse)(number));
     let index = listManager.findByNumberOfHouse(number);
     if (index !== nonentityIndexHouseOfHousehold) {
-        listManager.getListManager().splice(index, 1);
+        let question;
+        do {
+            question = rl.question(`Bạn chắc chắn muốn xóa?[Y/N]: `);
+        } while (!(0, RegEx_Question_1.checkYesOrNoForm)(question));
+        if (question == 'Y') {
+            listManager.getListManager().splice(index, 1);
+        }
+        else
+            delete_Info();
     }
     else
         console.log(`Không tồn tại số nhà!`);
@@ -282,8 +292,15 @@ function deleteByName(indexManager, listSameName) {
     console.table(listSameName);
     let indexPersonOfListSameName = rl.question(`Chọn index thông tin nhân vật muốn xóa: `);
     tempIndex = findExactlyIndexOfPersonNeedDelete(indexManager, listSameName, indexPersonOfListSameName);
-    // @ts-ignore
-    listManager.getListManager()[indexManager].getListPerson().splice(tempIndex, 1);
+    let question;
+    do {
+        question = rl.question(`Bạn chắc chắn muốn xóa?[Y/N]: `);
+    } while (!(0, RegEx_Question_1.checkYesOrNoForm)(question));
+    if (question == 'Y') {
+        listManager.getListManager()[indexManager].getListPerson().splice(tempIndex, 1);
+    }
+    else
+        delete_Info();
 }
 function DeletePerson() {
     console.log();
@@ -301,29 +318,29 @@ function DeletePerson() {
         console.log(`Không tồn tại số nhà!`);
     }
 }
-function countGender(i, j, numberOfMale, numberOfFemale) {
-    if (listManager.getListManager()[i].getListPerson()[j].getGender() == "Male") {
+function countGender(person, numberOfMale, numberOfFemale) {
+    if (person.getGender() === "Male") {
         numberOfMale++;
     }
-    else if (listManager.getListManager()[i].getListPerson()[j].getGender() == "Female") {
+    else if (person.getGender() === "Female") {
         numberOfFemale++;
     }
+    return { numberOfMale, numberOfFemale };
 }
-function countAgeInterval(i, j, children, teenager, middleAged, seniorCitizen) {
-    if (listManager.getListManager()[i].getListPerson()[j].getAge() <= ageMinOfTeenager) {
+function countIntervalAge(person, children, teenager, middleAged, seniorCitizen) {
+    if (person.getAge() <= ageMinOfTeenager && person.getAge() >= 0) {
         children++;
     }
-    else if (listManager.getListManager()[i].getListPerson()[j].getAge() > ageMinOfTeenager
-        && listManager.getListManager()[i].getListPerson()[j].getAge() <= ageMaxOfTeenager) {
+    else if (person.getAge() > ageMinOfTeenager && person.getAge() <= ageMaxOfTeenager) {
         teenager++;
     }
-    else if (listManager.getListManager()[i].getListPerson()[j].getAge() > ageMaxOfTeenager
-        && listManager.getListManager()[i].getListPerson()[j].getAge() < ageOfSeniorCitizen) {
+    else if (person.getAge() > ageMaxOfTeenager && person.getAge() < ageOfSeniorCitizen) {
         middleAged++;
     }
-    else if (listManager.getListManager()[i].getListPerson()[j].getAge() >= ageOfSeniorCitizen) {
+    else if (person.getAge() >= ageOfSeniorCitizen) {
         seniorCitizen++;
     }
+    return { children, teenager, middleAged, seniorCitizen };
 }
 function Statistical_table() {
     console.log();
@@ -335,11 +352,17 @@ function Statistical_table() {
     let middleAged = countDefault;
     let seniorCitizen = countDefault;
     let children = countDefault;
-    listManager.getListManager().forEach((household, indexHousehold) => {
+    listManager.getListManager().forEach((household) => {
         sum += household.getListPerson().length;
-        listManager.getListManager()[indexHousehold].getListPerson().forEach((persons, indexPerson) => {
-            countGender(indexHousehold, indexPerson, numberOfMale, numberOfMale);
-            countAgeInterval(indexHousehold, indexPerson, children, teenager, middleAged, seniorCitizen);
+        household.getListPerson().forEach((person) => {
+            const __ret = countGender(person, numberOfMale, numberOfFemale);
+            numberOfMale = __ret.numberOfMale;
+            numberOfFemale = __ret.numberOfFemale;
+            const __ret2 = countIntervalAge(person, children, teenager, middleAged, seniorCitizen);
+            children = __ret2.children;
+            teenager = __ret2.teenager;
+            middleAged = __ret2.middleAged;
+            seniorCitizen = __ret2.seniorCitizen;
         });
     });
     console.log(`Khu phố tổng cộng có ${listManager.getListManager().length} hộ dân, tổng ${sum} người. Trong đó có ${numberOfMale} nam và ${numberOfFemale} nữ`);
@@ -350,15 +373,13 @@ function List_Military() {
     console.log();
     console.log(`====== Danh sách thiếu niên có thể tham gia nghĩa vụ quân sự ======`);
     let arrayManagerMilitary = [];
-    for (let i = 0; i < listManager.getListManager().length; i++) {
-        for (let j = 0; j < listManager.getListManager()[i].getListPerson().length; j++) {
-            if (listManager.getListManager()[i].getListPerson()[j].getAge() >= ageMinOfMilitary
-                && listManager.getListManager()[i].getListPerson()[j].getAge() <= ageMaxOfMilitary
-                && listManager.getListManager()[i].getListPerson()[j].getGender() === 'Male') {
-                arrayManagerMilitary.push(listManager.getListManager()[i].getListPerson()[j]);
+    listManager.getListManager().forEach((household) => {
+        household.getListPerson().forEach((person) => {
+            if (person.getAge() >= ageMinOfMilitary && person.getAge() <= ageMaxOfMilitary && person.getGender() == 'Male') {
+                arrayManagerMilitary.push(person);
             }
-        }
-    }
+        });
+    });
     if (arrayManagerMilitary.length == 0) {
         console.log(`Danh sách không tồn tại!`);
     }
@@ -369,13 +390,13 @@ function List_Old_Person() {
     console.log();
     console.log(`====== Danh sách hưu trí trong xóm ======`);
     let arrayOldPeople = [];
-    for (let i = 0; i < listManager.getListManager().length; i++) {
-        for (let j = 0; j < listManager.getListManager()[i].getListPerson().length; j++) {
-            if (listManager.getListManager()[i].getListPerson()[j].getAge() >= ageOfSeniorCitizen) {
-                arrayOldPeople.push(listManager.getListManager()[i].getListPerson()[j]);
+    listManager.getListManager().forEach((household) => {
+        household.getListPerson().forEach((person) => {
+            if (person.getAge() >= ageOfSeniorCitizen) {
+                arrayOldPeople.push(person);
             }
-        }
-    }
+        });
+    });
     if (arrayOldPeople.length == 0) {
         console.log(`Danh sách không tồn tại!`);
     }
@@ -413,6 +434,31 @@ function manager_Info() {
             break;
     }
 }
+function findInfo() {
+    console.log();
+    console.log(`===== Tìm kiếm vị trí xuất hiện tên người dân =====`);
+    let name;
+    do {
+        name = rl.question(`Nhập tên người dân muốn tìm vị trí: `);
+    } while (!(0, RegEx_Name_1.checkNameForm)(name));
+    findPositionByName(name);
+}
+function findPositionByName(name) {
+    let flag = -1;
+    listManager.getListManager().forEach((household) => {
+        household.getListPerson().forEach((person) => {
+            if (person.getName() === name) {
+                console.log();
+                console.log(`Người dân có tên ${name} có thông tin trong nhà số ${household.getNumberOfHouse()}`);
+            }
+            else {
+                flag++;
+            }
+        });
+    });
+    if (flag < 0)
+        console.log(`Không tồn tại thông tin!`);
+}
 //main
 let listManager = new District_1.DistrictManager();
 const choiceDefault = -1;
@@ -447,6 +493,9 @@ while (choice !== ChoiceMainMenu_1.ChoiceMainMenu.EXIT) {
             break;
         case ChoiceMainMenu_1.ChoiceMainMenu.MANAGERINFO:
             manager_Info();
+            break;
+        case ChoiceMainMenu_1.ChoiceMainMenu.GPS:
+            findInfo();
             break;
     }
 }

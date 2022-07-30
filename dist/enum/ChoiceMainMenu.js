@@ -8,5 +8,6 @@ var ChoiceMainMenu;
     ChoiceMainMenu[ChoiceMainMenu["MODIFYINFO"] = 3] = "MODIFYINFO";
     ChoiceMainMenu[ChoiceMainMenu["DELETEINFO"] = 4] = "DELETEINFO";
     ChoiceMainMenu[ChoiceMainMenu["MANAGERINFO"] = 5] = "MANAGERINFO";
+    ChoiceMainMenu[ChoiceMainMenu["GPS"] = 6] = "GPS";
     ChoiceMainMenu[ChoiceMainMenu["EXIT"] = 0] = "EXIT";
 })(ChoiceMainMenu = exports.ChoiceMainMenu || (exports.ChoiceMainMenu = {}));

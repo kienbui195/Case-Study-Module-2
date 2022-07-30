@@ -7,5 +7,6 @@ var ChoiceToFix;
     ChoiceToFix[ChoiceToFix["DOB"] = 2] = "DOB";
     ChoiceToFix[ChoiceToFix["JOB"] = 3] = "JOB";
     ChoiceToFix[ChoiceToFix["GENDER"] = 4] = "GENDER";
+    ChoiceToFix[ChoiceToFix["NUMBEROFHOUSE"] = 5] = "NUMBEROFHOUSE";
     ChoiceToFix[ChoiceToFix["GOBACK"] = 0] = "GOBACK";
 })(ChoiceToFix = exports.ChoiceToFix || (exports.ChoiceToFix = {}));

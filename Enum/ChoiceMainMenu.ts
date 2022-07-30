@@ -4,5 +4,6 @@ export enum ChoiceMainMenu {
     MODIFYINFO,
     DELETEINFO,
     MANAGERINFO,
+    GPS,
     EXIT = 0
 }

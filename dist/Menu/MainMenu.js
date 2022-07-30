@@ -9,6 +9,7 @@ function mainMenu() {
     console.log(`3. Sửa thông tin`);
     console.log(`4. Xóa thông tin`);
     console.log(`5. Quản lý thông tin`);
+    console.log(`6. GPS`);
     console.log(`0. Thoát`);
 }
 exports.mainMenu = mainMenu;
