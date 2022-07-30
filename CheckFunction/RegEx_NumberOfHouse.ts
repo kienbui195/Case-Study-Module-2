@@ -1,4 +1,4 @@
 export function  checkNumberOfHouse(number: string): boolean {
-    let form: RegExp = /^[0-9A-Za-z]{1,4}$/;
+    let form: RegExp = /(?:\d+|\d+[A-Za-z]{1,3})$/;
     return form.test(number);
 }

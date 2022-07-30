@@ -33,7 +33,10 @@ class Person {
         this._gender = value;
     }
     getAge() {
-        return (new Date().getFullYear() - +this._dob);
+        if (new Date().getFullYear() - +this._dob > 0)
+            return (new Date().getFullYear() - +this._dob);
+        else
+            return this.getAge();
     }
 }
 exports.Person = Person;
