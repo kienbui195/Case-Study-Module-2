@@ -22,7 +22,6 @@ import {checkNameForm} from "./CheckFunction/RegEx_Name";
 import {checkNumberOfMemberForm} from "./CheckFunction/RegEx_NumberOfMember";
 import {checkYesOrNoForm} from "./CheckFunction/RegEx_Question";
 
-
 export function addPersonInfo() {
     let dob: string, gender: string, job: string, name: string;
     do {

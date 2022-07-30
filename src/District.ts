@@ -18,8 +18,4 @@ export class DistrictManager {
         })
         return result;
     }
-
-    showInfo() {
-        return this.listManager
-    }
 }

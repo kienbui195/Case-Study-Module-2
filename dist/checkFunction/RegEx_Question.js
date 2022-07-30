@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkYesOrNoForm = void 0;
-function checkYesOrNoForm(anwser) {
-    let form = /^(Y|N)?$/;
-    return form.test(anwser);
+function checkYesOrNoForm(answer) {
+    let form = /^[Y|N]$/;
+    return form.test(answer);
 }
 exports.checkYesOrNoForm = checkYesOrNoForm;

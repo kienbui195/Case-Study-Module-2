@@ -20,8 +20,5 @@ class DistrictManager {
         });
         return result;
     }
-    showInfo() {
-        return this.listManager;
-    }
 }
 exports.DistrictManager = DistrictManager;

@@ -1,4 +1,4 @@
 export function  checkAgeForm(age: string): boolean {
-    let form: RegExp = /^(199[0-9]|19[5-9][0-9]|200[0-9]|20[1-2][0-9])$/;
+    let form: RegExp = /^(199\d|19[5-9]\d|200\d|20[1-2]\d)$/;
     return form.test(age);
 }

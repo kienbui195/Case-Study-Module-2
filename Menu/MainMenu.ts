@@ -1,5 +1,3 @@
-import * as rl from "readline-sync";
-
 export function mainMenu() {
     console.log();
     console.log(`======= Main Menu =======`);
