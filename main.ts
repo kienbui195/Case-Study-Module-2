@@ -22,6 +22,40 @@ import {checkNameForm} from "./CheckFunction/RegEx_Name";
 import {checkNumberOfMemberForm} from "./CheckFunction/RegEx_NumberOfMember";
 import {checkYesOrNoForm} from "./CheckFunction/RegEx_Question";
 
+let listManager = new DistrictManager();
+
+const choiceDefault = -1;
+const ageOfSeniorCitizen = 54;
+const ageMinOfTeenager = 11;
+const ageMaxOfTeenager = 35;
+const ageMinOfMilitary = 18;
+const ageMaxOfMilitary = 25;
+const countDefault = 0;
+const nonentityIndexHouseOfHousehold = -1;
+
+let choice = choiceDefault;
+let choiceAddInfo = choiceDefault;
+let choiceShowInfo = choiceDefault;
+let choiceDeleteInfo = choiceDefault;
+let choiceManger = choiceDefault;
+let choiceToFix = choiceDefault;
+
+let person1 = new Person('Tung', '2006', 'abcd', 'Male');
+let person2 = new Person('Bao', '1958', 'abcd', 'Male');
+let person3 = new Person('Kien', '1995', 'abcd', 'Male');
+let person4 = new Person('Trang', '2010', 'abcd', 'Female');
+
+let  household1 = new Household('2', '1a');
+let  household2 = new Household('2', '2b');
+
+household1.setListPerson(person1);
+household1.setListPerson(person2);
+household2.setListPerson(person3);
+household2.setListPerson(person4);
+
+listManager.addInfo(household1);
+listManager.addInfo(household2);
+
 export function addPersonInfo() {
     let dob: string, gender: string, job: string, name: string;
     do {
@@ -142,7 +176,6 @@ function show_Info() {
     }
 }
 
-
 function choiceFixMenu(indexManager: number, indexPersonNeedEdit: number) {
     console.table(listManager.getListManager()[indexManager].getListPerson()[indexPersonNeedEdit]);
     let name: string, gender: string, job: string, dob: string, numberOfHouse: string;
@@ -220,7 +253,6 @@ function modify_Info() {
     } else console.log(`Không tồn tại số nhà!`);
 }
 
-
 function DeleteHousehold() {
     console.log();
     console.log(`===== Xóa thông tin hộ dân =====`);
@@ -241,13 +273,13 @@ function DeleteHousehold() {
     } else console.log(`Không tồn tại số nhà!`);
 }
 
-function findExactlyIndexOfPersonNeedDelete(indexManager: number, listSameName: Person[], indexPerson: string) {
+function findExactlyIndexOfPersonNeedDelete(indexManager: number, listSameName: Person[], indexPerson: number) {
     let tempIndex: number;
     listManager.getListManager()[indexManager].getListPerson().forEach((item, index) => {
-        if (listSameName[+indexPerson].getName() == item.getName()
-            && listSameName[+indexPerson].getDob() == item.getDob()
-            && listSameName[+indexPerson].getJob() == item.getJob()
-            && listSameName[+indexPerson].getGender() == item.getGender()) {
+        if (listSameName[indexPerson].getName() == item.getName()
+            && listSameName[indexPerson].getDob() == item.getDob()
+            && listSameName[indexPerson].getJob() == item.getJob()
+            && listSameName[indexPerson].getGender() == item.getGender()) {
             tempIndex = index;
         }
     });
@@ -264,7 +296,7 @@ function deleteByName(indexManager: number, listSameName: Person[]) {
     } while (!checkNameForm(name));
     listSameName = listManager.getListManager()[indexManager].findByName(name);
     console.table(listSameName);
-    let indexPersonOfListSameName = rl.question(`Chọn index thông tin nhân vật muốn xóa: `);
+    let indexPersonOfListSameName = +rl.question(`Chọn index người dân muốn xóa: `);
     tempIndex = findExactlyIndexOfPersonNeedDelete(indexManager, listSameName, indexPersonOfListSameName);
     let question: string;
     do {
@@ -434,24 +466,6 @@ function findPositionByName(name: string) {
 
 
 //main
-let listManager = new DistrictManager();
-
-const choiceDefault = -1;
-const ageOfSeniorCitizen = 54;
-const ageMinOfTeenager = 11;
-const ageMaxOfTeenager = 35;
-const ageMinOfMilitary = 18;
-const ageMaxOfMilitary = 25;
-const countDefault = 0;
-const nonentityIndexHouseOfHousehold = -1;
-
-let choice = choiceDefault;
-let choiceAddInfo = choiceDefault;
-let choiceShowInfo = choiceDefault;
-let choiceDeleteInfo = choiceDefault;
-let choiceManger = choiceDefault;
-let choiceToFix = choiceDefault;
-
 while (choice !== ChoiceMainMenu.EXIT) {
     mainMenu();
     choice = +rl.question(`Mời bạn nhập lựa chọn: `);
@@ -480,7 +494,7 @@ while (choice !== ChoiceMainMenu.EXIT) {
 
 
 
-    
+
     
     
     

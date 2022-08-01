@@ -47,6 +47,33 @@ const ChoiceToFix_1 = require("./Enum/ChoiceToFix");
 const RegEx_Name_1 = require("./CheckFunction/RegEx_Name");
 const RegEx_NumberOfMember_1 = require("./CheckFunction/RegEx_NumberOfMember");
 const RegEx_Question_1 = require("./CheckFunction/RegEx_Question");
+let listManager = new District_1.DistrictManager();
+const choiceDefault = -1;
+const ageOfSeniorCitizen = 54;
+const ageMinOfTeenager = 11;
+const ageMaxOfTeenager = 35;
+const ageMinOfMilitary = 18;
+const ageMaxOfMilitary = 25;
+const countDefault = 0;
+const nonentityIndexHouseOfHousehold = -1;
+let choice = choiceDefault;
+let choiceAddInfo = choiceDefault;
+let choiceShowInfo = choiceDefault;
+let choiceDeleteInfo = choiceDefault;
+let choiceManger = choiceDefault;
+let choiceToFix = choiceDefault;
+let person1 = new Person_1.Person('Tung', '2006', 'abcd', 'Male');
+let person2 = new Person_1.Person('Bao', '1958', 'abcd', 'Male');
+let person3 = new Person_1.Person('Kien', '1995', 'abcd', 'Male');
+let person4 = new Person_1.Person('Trang', '2010', 'abcd', 'Female');
+let household1 = new Household_1.Household('2', '1a');
+let household2 = new Household_1.Household('2', '2b');
+household1.setListPerson(person1);
+household1.setListPerson(person2);
+household2.setListPerson(person3);
+household2.setListPerson(person4);
+listManager.addInfo(household1);
+listManager.addInfo(household2);
 function addPersonInfo() {
     let dob, gender, job, name;
     do {
@@ -271,10 +298,10 @@ function DeleteHousehold() {
 function findExactlyIndexOfPersonNeedDelete(indexManager, listSameName, indexPerson) {
     let tempIndex;
     listManager.getListManager()[indexManager].getListPerson().forEach((item, index) => {
-        if (listSameName[+indexPerson].getName() == item.getName()
-            && listSameName[+indexPerson].getDob() == item.getDob()
-            && listSameName[+indexPerson].getJob() == item.getJob()
-            && listSameName[+indexPerson].getGender() == item.getGender()) {
+        if (listSameName[indexPerson].getName() == item.getName()
+            && listSameName[indexPerson].getDob() == item.getDob()
+            && listSameName[indexPerson].getJob() == item.getJob()
+            && listSameName[indexPerson].getGender() == item.getGender()) {
             tempIndex = index;
         }
     });
@@ -290,7 +317,7 @@ function deleteByName(indexManager, listSameName) {
     } while (!(0, RegEx_Name_1.checkNameForm)(name));
     listSameName = listManager.getListManager()[indexManager].findByName(name);
     console.table(listSameName);
-    let indexPersonOfListSameName = rl.question(`Chọn index thông tin nhân vật muốn xóa: `);
+    let indexPersonOfListSameName = +rl.question(`Chọn index người dân muốn xóa: `);
     tempIndex = findExactlyIndexOfPersonNeedDelete(indexManager, listSameName, indexPersonOfListSameName);
     let question;
     do {
@@ -460,21 +487,6 @@ function findPositionByName(name) {
         console.log(`Không tồn tại thông tin!`);
 }
 //main
-let listManager = new District_1.DistrictManager();
-const choiceDefault = -1;
-const ageOfSeniorCitizen = 54;
-const ageMinOfTeenager = 11;
-const ageMaxOfTeenager = 35;
-const ageMinOfMilitary = 18;
-const ageMaxOfMilitary = 25;
-const countDefault = 0;
-const nonentityIndexHouseOfHousehold = -1;
-let choice = choiceDefault;
-let choiceAddInfo = choiceDefault;
-let choiceShowInfo = choiceDefault;
-let choiceDeleteInfo = choiceDefault;
-let choiceManger = choiceDefault;
-let choiceToFix = choiceDefault;
 while (choice !== ChoiceMainMenu_1.ChoiceMainMenu.EXIT) {
     (0, MainMenu_1.mainMenu)();
     choice = +rl.question(`Mời bạn nhập lựa chọn: `);
